@@ -76,7 +76,7 @@ T = {
     },
     "pricing": {
         "k": "Tarifs", "title": "Un prix fixe, frais d'État inclus",
-        "lead": "Création au Wyoming. Paiement unique, sans abonnement caché.",
+        "lead": "Création au Wyoming. Prix TTC, paiement unique, sans abonnement caché.",
         "popular": "Le plus choisi", "once": "paiement unique", "choose": "Choisir", "per_year": " / an",
         "plans": {
             "basic": {"name": "Basic", "desc": "Idéal pour démarrer simplement et en toute sécurité.",

@@ -76,7 +76,7 @@ T = {
     },
     "pricing": {
         "k": "Pricing", "title": "One fixed price, state fees included",
-        "lead": "Formation in Wyoming. One-time payment, no hidden subscription.",
+        "lead": "Formation in Wyoming. Prices include VAT, one-time payment, no hidden subscription.",
         "popular": "Most popular", "once": "one-time", "choose": "Choose", "per_year": " / year",
         "plans": {
             "basic": {"name": "Basic", "desc": "Ideal to get started simply and safely.",
