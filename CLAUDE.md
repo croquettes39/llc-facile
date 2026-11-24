@@ -28,7 +28,7 @@ Déployé par Vercel à chaque push sur `main`. Pour toute modification, suivre 
 - Les démarches par formule (`STEPS`) et les messages WhatsApp pré-écrits (`WA`, fr + darija) sont dans `admin/admin.js`.
 
 ## Statistiques (llcfacile.com/admin#stats)
-- Mesure d'audience maison, anonyme : `assets/site.js` (fin du fichier) envoie page vue / présence toutes les 25 s / départ (sendBeacon) vers la fonction `llcfacile-stats` -> tables `llcfacile.visites` et `llcfacile.presence`. Pays déduit du fuseau horaire, pas d'IP stockée. Actif seulement sur llcfacile.com et *.vercel.app.
+- Mesure d'audience maison, anonyme : `assets/site.js` (fin du fichier) envoie page vue / présence toutes les 25 s / départ (sendBeacon) vers la fonction `llcfacile-stats` -> tables `llcfacile.visites` et `llcfacile.presence`. Pays = code pays Vercel via `api/geo.js` (repli : fuseau horaire), pas d'IP stockée. Actif seulement sur llcfacile.com et *.vercel.app.
 - Action `stats` de `llcfacile-admin` (période 1/7/30/90 j, heure du Maroc) ; vue « Statistiques » dans `admin/admin.js` (en ligne maintenant rafraîchi toutes les 15 s).
 - Politique de confidentialité mise à jour en conséquence (conservation 13 mois max).
 

@@ -289,9 +289,20 @@
     };
     let tz = '';
     try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { /* rien */ }
-    send('pv', { r: document.referrer, u: new URLSearchParams(location.search).get('utm_source') || '', tz, w: screen.width });
-    setInterval(() => { if (document.visibilityState === 'visible') send('hb', { tz }); }, 25000);
-    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') send('hb', { tz }); });
+    // Code pays (Vercel), mis en mémoire pour la session
+    const pays = async () => {
+      try { const c = sessionStorage.getItem('llcf-cc'); if (c !== null) return c; } catch (e) { /* rien */ }
+      let c = '';
+      try { const r = await fetch('/api/geo', { cache: 'no-store' }); c = ((await r.json()).c || '').slice(0, 2); } catch (e) { /* inconnu */ }
+      try { sessionStorage.setItem('llcf-cc', c); } catch (e) { /* rien */ }
+      return c;
+    };
+    pays().then((c) => {
+      base.c = c;
+      send('pv', { r: document.referrer, u: new URLSearchParams(location.search).get('utm_source') || '', tz, w: screen.width });
+      setInterval(() => { if (document.visibilityState === 'visible') send('hb', { tz }); }, 25000);
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') send('hb', { tz }); });
+    });
     addEventListener('pagehide', () => send('bye'));
   })();
 }

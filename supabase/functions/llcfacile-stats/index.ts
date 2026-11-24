@@ -8,7 +8,17 @@ import postgres from "npm:postgres@3.4.5";
 const ORIGINS = ["https://llcfacile.com", "https://www.llcfacile.com", "https://llc-facile.vercel.app"];
 const sql = postgres(Deno.env.get("SUPABASE_DB_URL")!, { max: 1, prepare: false });
 
-// Pays déduit du fuseau horaire du navigateur (aucune géolocalisation par IP).
+const NOMS: Record<string, string> = {
+  MA: "Maroc", FR: "France", BE: "Belgique", CH: "Suisse", LU: "Luxembourg", MC: "Monaco", CA: "Canada", DZ: "Algérie", TN: "Tunisie",
+  SN: "Sénégal", CI: "Côte d'Ivoire", CM: "Cameroun", GB: "Royaume-Uni", ES: "Espagne", DE: "Allemagne", IT: "Italie", NL: "Pays-Bas",
+  PT: "Portugal", AE: "Émirats arabes unis", SA: "Arabie saoudite", QA: "Qatar", TR: "Turquie", US: "États-Unis", IE: "Irlande",
+  AT: "Autriche", SE: "Suède", NO: "Norvège", DK: "Danemark", FI: "Finlande", PL: "Pologne", RO: "Roumanie", GR: "Grèce",
+  EG: "Égypte", MR: "Mauritanie", ML: "Mali", GA: "Gabon", CD: "RD Congo", CG: "Congo", BJ: "Bénin", BF: "Burkina Faso", TG: "Togo",
+  MG: "Madagascar", MU: "Maurice", GN: "Guinée", NE: "Niger", TD: "Tchad", RE: "La Réunion", GP: "Guadeloupe", MQ: "Martinique",
+  BR: "Brésil", MX: "Mexique", IN: "Inde", CN: "Chine", JP: "Japon", SG: "Singapour", HK: "Hong Kong", KW: "Koweït", BH: "Bahreïn",
+  OM: "Oman", JO: "Jordanie", LB: "Liban", IL: "Israël", RU: "Russie", UA: "Ukraine", AU: "Australie", HU: "Hongrie", CZ: "Tchéquie",
+};
+// Repli : pays déduit du fuseau horaire du navigateur.
 const PAYS: Record<string, string> = {
   "Africa/Casablanca": "Maroc", "Africa/El_Aaiun": "Maroc", "Europe/Paris": "France", "Europe/Brussels": "Belgique",
   "Europe/Zurich": "Suisse", "Europe/Luxembourg": "Luxembourg", "Europe/Monaco": "Monaco", "America/Montreal": "Canada",
@@ -18,7 +28,7 @@ const PAYS: Record<string, string> = {
   "Asia/Dubai": "Émirats arabes unis", "Asia/Riyadh": "Arabie saoudite", "Asia/Qatar": "Qatar", "Europe/Istanbul": "Turquie",
   "America/New_York": "États-Unis", "America/Chicago": "États-Unis", "America/Denver": "États-Unis", "America/Los_Angeles": "États-Unis",
 };
-const pays = (tz: string) => PAYS[tz] ?? (tz ? tz.split("/")[0].replace("America", "Amériques").replace("Africa", "Afrique").replace("Asia", "Asie") + " (autre)" : "Inconnu");
+const pays = (tz: string) => PAYS[tz] ?? (!tz || /^(UTC|Etc|GMT)/i.test(tz) ? "Inconnu" : tz.split("/")[0].replace("America", "Amériques").replace("Africa", "Afrique").replace("Asia", "Asie").replace("Europe", "Europe") + " (autre)");
 
 function appareil(ua: string, w: number) {
   if (/iPad|Tablet/i.test(ua) || (/Android/i.test(ua) && !/Mobile/i.test(ua))) return "Tablette";
@@ -85,7 +95,9 @@ Deno.serve(async (req) => {
   const langue = ["fr", "ar", "en"].includes(s(b.l, 2)) ? s(b.l, 2) : "fr";
   const w = Number(b.w) || 0;
   const app = appareil(ua, w);
-  const p = pays(s(b.tz, 60));
+  // Pays : en-tête géographique du réseau (code pays seulement, pas d'IP stockée), sinon fuseau horaire.
+  const cc = (s(b.c, 2) || req.headers.get("cf-ipcountry") || "").toUpperCase(); // code pays envoyé par llcfacile.com/api/geo
+  const p = /^[A-Z]{2}$/.test(cc) && cc !== "XX" && cc !== "T1" ? (NOMS[cc] ?? cc) : pays(s(b.tz, 60));
 
   try {
     if (t === "bye") {

@@ -321,6 +321,12 @@
     const rest = l === 'fr' ? m : (m.slice(3) || '/');
     return (PAGES[rest] || rest) + (l === 'fr' ? '' : ' · ' + LANGS[l]);
   };
+  const CODES = {"Maroc": "MA", "France": "FR", "Belgique": "BE", "Suisse": "CH", "Luxembourg": "LU", "Monaco": "MC", "Canada": "CA", "Algérie": "DZ", "Tunisie": "TN", "Sénégal": "SN", "Côte d'Ivoire": "CI", "Cameroun": "CM", "Royaume-Uni": "GB", "Espagne": "ES", "Allemagne": "DE", "Italie": "IT", "Pays-Bas": "NL", "Portugal": "PT", "Émirats arabes unis": "AE", "Arabie saoudite": "SA", "Qatar": "QA", "Turquie": "TR", "États-Unis": "US", "Irlande": "IE", "Autriche": "AT", "Suède": "SE", "Norvège": "NO", "Danemark": "DK", "Finlande": "FI", "Pologne": "PL", "Roumanie": "RO", "Grèce": "GR", "Égypte": "EG", "Mauritanie": "MR", "Mali": "ML", "Gabon": "GA", "RD Congo": "CD", "Congo": "CG", "Bénin": "BJ", "Burkina Faso": "BF", "Togo": "TG", "Madagascar": "MG", "Maurice": "MU", "Guinée": "GN", "Niger": "NE", "Tchad": "TD", "La Réunion": "RE", "Guadeloupe": "GP", "Martinique": "MQ", "Brésil": "BR", "Mexique": "MX", "Inde": "IN", "Chine": "CN", "Japon": "JP", "Singapour": "SG", "Hong Kong": "HK", "Koweït": "KW", "Bahreïn": "BH", "Oman": "OM", "Jordanie": "JO", "Liban": "LB", "Israël": "IL", "Russie": "RU", "Ukraine": "UA", "Australie": "AU", "Hongrie": "HU", "Tchéquie": "CZ"};
+  const drapeau = (nom) => {
+    const c = CODES[nom] || (/^[A-Z]{2}$/.test(nom || '') ? nom : '');
+    return c ? String.fromCodePoint(...[...c].map(x => 0x1F1E6 + x.charCodeAt(0) - 65)) : '🌐';
+  };
+  const paysNom = (n) => drapeau(n) + ' ' + (n || 'Inconnu');
   const depuis = (d) => { const s = Math.max(0, Math.round((Date.now() - new Date(d)) / 1000)); return s < 60 ? s + ' s' : Math.round(s / 60) + ' min'; };
   const evol = (a, b) => {
     if (!b) return a ? '<span class="ev up">nouveau</span>' : '';
@@ -333,7 +339,7 @@
     $('#st-live-n').textContent = rows.length;
     $('#st-live-maj').textContent = 'mis à jour à ' + new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     $('#st-live').innerHTML = rows.length ? `<div class="table-wrap"><table class="admin-table live-t"><thead><tr><th>Page en cours</th><th>Pays</th><th>Langue</th><th>Appareil</th><th>Venu de</th><th>Sur le site depuis</th></tr></thead><tbody>${
-      rows.map(r => `<tr><td><b>${esc(pageNom(r.page))}</b></td><td>${esc(r.pays || '')}</td><td>${esc(LANGS[r.langue] || r.langue || '')}</td><td>${esc(r.appareil || '')}</td><td>${esc(r.source || '')}</td><td>${depuis(r.debut)}</td></tr>`).join('')
+      rows.map(r => `<tr><td><b>${esc(pageNom(r.page))}</b></td><td>${esc(paysNom(r.pays))}</td><td>${esc(LANGS[r.langue] || r.langue || '')}</td><td>${esc(r.appareil || '')}</td><td>${esc(r.source || '')}</td><td>${depuis(r.debut)}</td></tr>`).join('')
     }</tbody></table></div>` : '<p class="empty" style="padding:12px 0">Personne en ce moment.</p>';
   }
 
@@ -393,7 +399,7 @@
       tile('Messages / questions à Léa', nf(c.messages) + ' / ' + nf(c.questions_lea));
     $('#st-tops').innerHTML =
       topList('Pages les plus vues', d.pages, pageNom) + topList('D’où viennent-ils ?', d.sources) +
-      topList('Pays', d.pays) + topList('Langue du site', d.langues, k => LANGS[k] || k) +
+      topList('Pays', d.pays, paysNom) + topList('Langue du site', d.langues, k => LANGS[k] || k) +
       topList('Appareils', d.appareils) + topList('Navigateurs', d.navigateurs);
   }
   $$('#st-periode button').forEach(b => b.addEventListener('click', () => {
