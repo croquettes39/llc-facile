@@ -34,7 +34,8 @@ Déployé par Vercel à chaque push sur `main`. Pour toute modification, suivre 
 
 ## Contact et assistante
 - Page Contact (3 langues) + boutons flottants WhatsApp et « Léa » sur toutes les pages (`chat_widget` dans `tools/build.py`, logique dans `assets/site.js`).
-- Fonction Supabase `llcfacile-contact` : `type: "message"` -> table `llcfacile.messages` ; `type: "chat"` -> Claude (secret `ANTHROPIC_API_KEY`, modèle `LLCFACILE_MODEL` ou claude-haiku-5-5), journal dans `llcfacile.chat`. Le texte de connaissance de Léa (prix, règles) est dans la constante `SYSTEM` : à mettre à jour avec les prix.
+- Léa répond **sans IA externe** (choix d'Angélica) : base de réponses fr / darija / en dans `assets/lea.js` (sujets + mots-clés). **À mettre à jour avec les prix, délais ou formules.** Question hors base -> renvoi vers WhatsApp Maroc.
+- Fonction Supabase `llcfacile-contact` : `type: "message"` -> table `llcfacile.messages` ; `type: "chat_log"` -> journal des questions/réponses de Léa dans `llcfacile.chat` (visible dans l'admin). L'ancien `type: "chat"` (Claude, secret `ANTHROPIC_API_KEY`) existe encore mais n'est plus appelé par le site.
 - Voix : synthèse vocale du navigateur, voix féminine choisie automatiquement ; dictée par micro si le navigateur le permet.
 
 ## Règles

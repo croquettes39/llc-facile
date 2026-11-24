@@ -174,8 +174,8 @@ T["chat"] = {
     "chips": ["Quelles formules proposez-vous ?", "Puis-je utiliser Stripe depuis le Maroc ?", "Quels documents faut-il ?"],
     "placeholder": "Écrivez votre question…", "send": "Envoyer", "mic": "Parler", "listening": "Je vous écoute…",
     "thinking": "Léa écrit…",
-    "fallback": "Je ne peux pas répondre pour le moment. Écrivez-nous sur WhatsApp, on vous répond rapidement.",
-    "note": "Assistante IA : réponses indicatives, sans conseil fiscal ni juridique.",
+    "fallback": "Je n'ai pas la réponse exacte. Écrivez-nous sur WhatsApp au +212 6 63 28 51 19, on vous répond rapidement.",
+    "note": "Assistante automatique : réponses indicatives, sans conseil fiscal ni juridique. Pour tout le reste : WhatsApp.",
     "speech": "fr-FR",
 }
 

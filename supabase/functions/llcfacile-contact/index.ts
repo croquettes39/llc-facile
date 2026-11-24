@@ -82,6 +82,17 @@ Deno.serve(async (req) => {
     return json({ ok: true });
   }
 
+  // Léa répond désormais dans le navigateur (assets/lea.js) : on journalise seulement la question et la réponse.
+  if (b.type === "chat_log") {
+    if (limited("l:" + ip, 40, 600_000)) return json({ ok: true });
+    const question = s(b.question, 1200), reponse = s(b.reponse, 2000);
+    if (!question) return json({ ok: true });
+    try {
+      await sql`insert into llcfacile.chat ${sql({ session: s(b.session, 64) || "anonyme", langue: lang, question, reponse, ip })}`;
+    } catch (e) { console.error(e); }
+    return json({ ok: true });
+  }
+
   if (b.type === "chat") {
     if (limited("c:" + ip, 30, 600_000)) return json({ error: "limite" }, 429);
     const session = s(b.session, 64) || "anonyme";

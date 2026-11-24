@@ -174,8 +174,8 @@ T["chat"] = {
     "chips": ["Which packages do you offer?", "Can I use Stripe from Morocco?", "Which documents do I need?"],
     "placeholder": "Type your question…", "send": "Send", "mic": "Speak", "listening": "Listening…",
     "thinking": "Léa is typing…",
-    "fallback": "I can't answer right now. Message us on WhatsApp and we'll reply quickly.",
-    "note": "AI assistant: indicative answers, no tax or legal advice.",
+    "fallback": "I don't have the exact answer. Message us on WhatsApp at +212 6 63 28 51 19 and we'll reply quickly.",
+    "note": "Automatic assistant: indicative answers, no tax or legal advice. For anything else: WhatsApp.",
     "speech": "en-GB",
 }
 

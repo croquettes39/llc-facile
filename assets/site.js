@@ -226,13 +226,15 @@
       busy = true; chips.hidden = true; input.value = '';
       add('me', q); history.push({ role: 'user', content: q });
       const wait = add('bot', cfg.thinking, 'wait');
-      let reply = cfg.fallback;
+      // Réponse locale (base de connaissances assets/lea.js), sans IA externe
+      let reply = cfg.fallback, rid = null;
+      try { if (window.LEA) { const a = window.LEA.answer(q, cfg.lang); reply = a.text; rid = a.id; } } catch (e) { /* repli */ }
+      await new Promise(r => setTimeout(r, 500 + Math.min(900, reply.length * 4)));
+      // Journal anonyme des questions (panel admin « Questions à Léa »)
       try {
-        const r = await fetch(cfg.endpoint, { method: 'POST', headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ type: 'chat', lang: cfg.lang, session, messages: history.slice(-12) }) });
-        const d = await r.json().catch(() => ({}));
-        if (r.ok && d.ok && d.reply) reply = d.reply;
-      } catch (e) { /* message de repli */ }
+        fetch(cfg.endpoint, { method: 'POST', headers: { 'content-type': 'application/json' }, keepalive: true,
+          body: JSON.stringify({ type: 'chat_log', lang: cfg.lang, session, question: q, reponse: reply, sujet: rid || '' }) }).catch(() => {});
+      } catch (e) { /* rien */ }
       wait.remove();
       add('bot', reply); history.push({ role: 'assistant', content: reply });
       speak(reply);
