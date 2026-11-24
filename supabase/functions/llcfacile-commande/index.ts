@@ -10,6 +10,7 @@ const ITIN = [249, 2690];
 // Sans lien pour la combinaison exacte (formule + option ITIN), le client reçoit le lien sur WhatsApp.
 const LINKS: Record<string, string> = {
   STRIPE_LINK_BASIC: "https://buy.stripe.com/7sY6oJ2od9mQ8Yc4b85J60p",
+  STRIPE_LINK_ULTIMATE: "https://buy.stripe.com/5kQaEZ5ApdD66Q40YW5J60q",
 };
 const TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "application/pdf"];
 const EXT: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/heic": "heic", "application/pdf": "pdf" };
