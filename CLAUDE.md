@@ -17,6 +17,11 @@ Déployé par Vercel à chaque push sur `main`. Pour toute modification, suivre 
 - Paiement : la fonction renvoie un lien Stripe Payment Link lu dans ses secrets `STRIPE_LINK_BASIC`, `STRIPE_LINK_ULTIMATE`, `STRIPE_LINK_ULTIMATE_LAUNCH` ; l'option ITIN a son propre lien `STRIPE_LINK_ITIN` (second bouton de paiement). Les liens sont aussi écrits dans la constante `LINKS` de la fonction. Sans lien, le client est invité à attendre le lien sur WhatsApp.
 - Maintenance annuelle (290 €, paiement ponctuel, pas d'abonnement) : https://buy.stripe.com/4gMeVf3sh2Ys4HWePM5J60t — envoyé chaque année par Angélica, hors formulaire ; aussi cité par Léa.
 
+## Confirmation de paiement
+- Fonction Supabase `llcfacile-stripe` = webhook Stripe (`checkout.session.completed`) : ne traite que les paiements dont `client_reference_id` commence par `LLC-` (le compte Stripe est partagé avec d'autres activités). Marque la commande `payee` (ou `itin_paye_le`), journalise dans `llcfacile.paiements`, envoie au client l'e-mail de confirmation (fr/ar/en) avec le guide PDF `documents/guide-client-llc-facile.pdf`, et prévient `NOTIFY_EMAIL` (défaut contact@llcfacile.com).
+- Secrets : `STRIPE_WEBHOOK_SECRET`, `SMTP_PASS` (boîte contact@llcfacile.com chez LWS ; `SMTP_HOST` défaut mail.llcfacile.com, port 465).
+- Le guide client se régénère depuis /home/claude/guide (HTML + Playwright) : en cas de changement de formule ou de délai, le mettre à jour aussi.
+
 ## Contact et assistante
 - Page Contact (3 langues) + boutons flottants WhatsApp et « Léa » sur toutes les pages (`chat_widget` dans `tools/build.py`, logique dans `assets/site.js`).
 - Fonction Supabase `llcfacile-contact` : `type: "message"` -> table `llcfacile.messages` ; `type: "chat"` -> Claude (secret `ANTHROPIC_API_KEY`, modèle `LLCFACILE_MODEL` ou claude-haiku-5-5), journal dans `llcfacile.chat`. Le texte de connaissance de Léa (prix, règles) est dans la constante `SYSTEM` : à mettre à jour avec les prix.
