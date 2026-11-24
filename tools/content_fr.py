@@ -178,3 +178,6 @@ T["chat"] = {
     "note": "Assistante IA : réponses indicatives, sans conseil fiscal ni juridique.",
     "speech": "fr-FR",
 }
+
+T["order"]["pay_itin"] = "Payer l'option ITIN"
+T["order"]["itin_pay_hint"] = "Vous avez choisi l'option ITIN : elle se règle avec un second paiement, juste après votre formule."

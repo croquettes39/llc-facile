@@ -14,7 +14,7 @@ Déployé par Vercel à chaque push sur `main`. Pour toute modification, suivre 
 
 ## Formulaire de commande
 - Envoie vers la fonction Supabase `llcfacile-commande` (projet `gbdjiczesmhhsrqhvrgj`, schéma `llcfacile`, table `commandes`, bucket privé `llcfacile-documents`). Ne jamais toucher au schéma `public` ni à `sovereignlife`.
-- Paiement : la fonction renvoie un lien Stripe Payment Link lu dans ses secrets `STRIPE_LINK_BASIC`, `STRIPE_LINK_ULTIMATE`, `STRIPE_LINK_ULTIMATE_LAUNCH` (et variantes `_ITIN`). Sans secret, le client est invité à attendre le lien sur WhatsApp.
+- Paiement : la fonction renvoie un lien Stripe Payment Link lu dans ses secrets `STRIPE_LINK_BASIC`, `STRIPE_LINK_ULTIMATE`, `STRIPE_LINK_ULTIMATE_LAUNCH` ; l'option ITIN a son propre lien `STRIPE_LINK_ITIN` (second bouton de paiement). Les liens sont aussi écrits dans la constante `LINKS` de la fonction. Sans lien, le client est invité à attendre le lien sur WhatsApp.
 
 ## Contact et assistante
 - Page Contact (3 langues) + boutons flottants WhatsApp et « Léa » sur toutes les pages (`chat_widget` dans `tools/build.py`, logique dans `assets/site.js`).

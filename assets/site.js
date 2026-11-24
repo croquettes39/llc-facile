@@ -109,6 +109,7 @@
         const wa = lang === 'ar' || $('[name=telephone]', form).value.trim().startsWith('+212') ? '212663285119' : '33780803130';
         $('#done-wa').href = `https://wa.me/${wa}?text=${encodeURIComponent(i18n.wa_ref + ' ' + data.reference)}`;
         if (data.paiement) { const p = $('#done-pay'); p.href = data.paiement; p.hidden = false; }
+        if (data.paiement_itin) { const p2 = $('#done-pay-itin'); p2.href = data.paiement_itin; p2.hidden = false; $('#done-itin-text').hidden = false; }
         else { $('#done-pay-text').hidden = true; $('#done-nopay').hidden = false; }
         form.hidden = true; done.hidden = false; done.focus();
         done.scrollIntoView({ block: 'start' });

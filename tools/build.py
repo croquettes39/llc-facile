@@ -152,7 +152,7 @@ def layout(lang, key, title, desc, body, extra_head=""):
 </div>
 </footer>
 {chat_widget(lang)}
-<script src="/assets/site.js?v=2" defer></script>
+<script src="/assets/site.js?v=3" defer></script>
 </body>
 </html>
 '''
@@ -423,7 +423,9 @@ def p_order(lang):
 <h2 style="font-size:30px">{e(o["done_t"])}</h2>
 <p>{e(o["done_ref"])} <strong id="done-ref" dir="ltr"></strong></p>
 <p id="done-pay-text">{e(o["done_pay"])}</p>
+<p class="hint" id="done-itin-text" hidden>{e(o["itin_pay_hint"])}</p>
 <div class="row"><a class="btn btn-gold" id="done-pay" href="#" hidden>{e(o["pay_btn"])} {ARROW}</a>
+<a class="btn btn-line" id="done-pay-itin" href="#" hidden>{e(o["pay_itin"])} {ARROW}</a>
 <a class="btn btn-navy" id="done-wa" href="#" target="_blank" rel="noopener">{CHAT} {e(o["done_wa"])}</a></div>
 <p class="hint" id="done-nopay" hidden>{e(o["done_nopay"])}</p>
 </div>

@@ -7,11 +7,12 @@ const ORIGINS = ["https://llcfacile.com", "https://www.llcfacile.com", "https://
 const PRIX = { basic: [299, 3290], ultimate: [499, 5390], ultimate_launch: [699, 7590] } as const;
 const ITIN = [249, 2690];
 // Liens de paiement Stripe (Payment Links). Un secret STRIPE_LINK_<FORMULE>[_ITIN] peut les remplacer.
-// Sans lien pour la combinaison exacte (formule + option ITIN), le client reçoit le lien sur WhatsApp.
+// L'option ITIN se paie avec un second lien, à part.
 const LINKS: Record<string, string> = {
   STRIPE_LINK_BASIC: "https://buy.stripe.com/7sY6oJ2od9mQ8Yc4b85J60p",
   STRIPE_LINK_ULTIMATE: "https://buy.stripe.com/5kQaEZ5ApdD66Q40YW5J60q",
   STRIPE_LINK_ULTIMATE_LAUNCH: "https://buy.stripe.com/9B6cN7e6VeHa0rG2305J60r",
+  STRIPE_LINK_ITIN: "https://buy.stripe.com/00w00l1k96aEb6kazw5J60s",
 };
 const TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "application/pdf"];
 const EXT: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/heic": "heic", "application/pdf": "pdf" };
@@ -108,11 +109,14 @@ Deno.serve(async (req) => {
     return json({ error: "base" }, 500);
   }
 
-  // Lien de paiement Stripe (Payment Link) par formule, réglé dans les secrets de la fonction.
-  const cle = `STRIPE_LINK_${formule.toUpperCase()}${itin ? "_ITIN" : ""}`;
-  const lien = Deno.env.get(cle) ?? LINKS[cle] ?? null;
-  // Les liens Stripe encaissent en euros (le prix en dirhams est indicatif, cf. CGV).
-  const paiement = lien ? `${lien}${lien.includes("?") ? "&" : "?"}client_reference_id=${ref}&prefilled_email=${encodeURIComponent(email)}` : null;
+  // Liens de paiement Stripe : la formule, puis l'option ITIN à part si elle est cochée.
+  // Les liens encaissent en euros (le prix en dirhams est indicatif, cf. CGV).
+  const lienDe = (cle: string) => {
+    const l = Deno.env.get(cle) ?? LINKS[cle] ?? null;
+    return l ? `${l}${l.includes("?") ? "&" : "?"}client_reference_id=${ref}&prefilled_email=${encodeURIComponent(email)}` : null;
+  };
+  const paiement = lienDe(`STRIPE_LINK_${formule.toUpperCase()}`);
+  const paiement_itin = itin ? lienDe("STRIPE_LINK_ITIN") : null;
 
-  return json({ ok: true, reference: ref, montant, devise, paiement });
+  return json({ ok: true, reference: ref, montant, devise, paiement, paiement_itin });
 });

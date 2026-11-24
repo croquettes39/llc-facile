@@ -178,3 +178,6 @@ T["chat"] = {
     "note": "AI assistant: indicative answers, no tax or legal advice.",
     "speech": "en-GB",
 }
+
+T["order"]["pay_itin"] = 'Pay the ITIN option'
+T["order"]["itin_pay_hint"] = 'You chose the ITIN option: it is paid separately, right after your package.'
