@@ -11,6 +11,7 @@ const ITIN = [249, 2690];
 const LINKS: Record<string, string> = {
   STRIPE_LINK_BASIC: "https://buy.stripe.com/7sY6oJ2od9mQ8Yc4b85J60p",
   STRIPE_LINK_ULTIMATE: "https://buy.stripe.com/5kQaEZ5ApdD66Q40YW5J60q",
+  STRIPE_LINK_ULTIMATE_LAUNCH: "https://buy.stripe.com/9B6cN7e6VeHa0rG2305J60r",
 };
 const TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "application/pdf"];
 const EXT: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/heic": "heic", "application/pdf": "pdf" };
