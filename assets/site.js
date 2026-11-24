@@ -163,7 +163,8 @@
     const linkify = (t) => {
       const div = document.createElement('div'); div.textContent = t;
       div.innerHTML = div.innerHTML
-        .replace(/\b(llcfacile\.com(\/[a-z\-\/]*)?)/gi, (m) => `<a href="https://${m}">${m}</a>`)
+        .replace(/(https:\/\/buy\.stripe\.com\/[A-Za-z0-9]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>')
+        .replace(/(?<![\/.])\b(llcfacile\.com(\/[a-z\-\/]*)?)/gi, (m) => `<a href="https://${m}">${m}</a>`)
         .replace(/(\+212 ?6 ?63 ?28 ?51 ?19)/g, `<a href="https://wa.me/${cfg.wa_ma}" target="_blank" rel="noopener">$1</a>`)
         .replace(/(\+33 ?7 ?80 ?80 ?31 ?30)/g, `<a href="https://wa.me/${cfg.wa_fr}" target="_blank" rel="noopener">$1</a>`);
       return div.innerHTML;
