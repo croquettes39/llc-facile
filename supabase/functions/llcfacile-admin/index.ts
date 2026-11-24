@@ -143,6 +143,47 @@ Deno.serve(async (req) => {
       const rows = await sql`select created_at, session, langue, question, reponse from llcfacile.chat order by created_at desc limit 200`;
       return json({ ok: true, chat: rows });
     }
+
+    case "stats": {
+      const jours = [1, 7, 30, 90].includes(Number(b.jours)) ? Number(b.jours) : 7;
+      const TZ = "Africa/Casablanca";
+      // Début de période : minuit (heure du Maroc) il y a jours-1 jours
+      const [{ debut, debut_prec }] = await sql`
+        select (date_trunc('day', now() at time zone ${TZ}) - make_interval(days => ${jours - 1}::int)) at time zone ${TZ} as debut,
+               (date_trunc('day', now() at time zone ${TZ}) - make_interval(days => ${2 * jours - 1}::int)) at time zone ${TZ} as debut_prec`;
+      const en_ligne = await sql`select page, langue, pays, appareil, source, debut, vu_le from llcfacile.presence
+        where vu_le > now() - interval '70 seconds' order by debut`;
+      const tot = async (a: Date, z: Date | null) => (await sql`
+        select count(*)::int as pages_vues, count(distinct visiteur)::int as visiteurs, count(distinct session)::int as visites
+        from llcfacile.visites where created_at >= ${a} ${z ? sql`and created_at < ${z}` : sql``}`)[0];
+      const total = await tot(debut, null);
+      const precedent = await tot(debut_prec, debut);
+      const [{ rebond }] = await sql`select coalesce(round(100.0 * count(*) filter (where n = 1) / nullif(count(*), 0)), 0)::int as rebond
+        from (select session, count(*) n from llcfacile.visites where created_at >= ${debut} group by session) x`;
+      const serie = jours === 1
+        ? await sql`select to_char(date_trunc('hour', created_at at time zone ${TZ}), 'HH24"h"') as x,
+              count(distinct visiteur)::int as visiteurs, count(*)::int as pages_vues
+            from llcfacile.visites where created_at >= ${debut} group by 1 order by 1`
+        : await sql`select to_char(d, 'YYYY-MM-DD') as x, coalesce(v.visiteurs, 0)::int as visiteurs, coalesce(v.pages_vues, 0)::int as pages_vues
+            from generate_series((${debut}::timestamptz at time zone ${TZ})::date, (now() at time zone ${TZ})::date, interval '1 day') d
+            left join (select (created_at at time zone ${TZ})::date as j, count(distinct visiteur) visiteurs, count(*) pages_vues
+                       from llcfacile.visites where created_at >= ${debut} group by 1) v on v.j = d::date order by d`;
+      const top = (col: string) => sql`select ${sql(col)} as k, count(distinct visiteur)::int as visiteurs, count(*)::int as pages_vues
+        from llcfacile.visites where created_at >= ${debut} group by 1 order by 2 desc, 3 desc limit 10`;
+      const [pages, sources, pays, langues, appareils, navigateurs] = await Promise.all(
+        ["page", "source", "pays", "langue", "appareil", "navigateur"].map(top));
+      const [cmd] = await sql`select count(*)::int as commandes,
+          count(*) filter (where paye_le is not null)::int as payees
+        from llcfacile.commandes where created_at >= ${debut}`;
+      const [enc] = await sql`select coalesce(sum(montant_centimes), 0)::int as centimes, count(*)::int as paiements
+        from llcfacile.paiements where created_at >= ${debut}`;
+      const [autres] = await sql`select
+          (select count(*)::int from llcfacile.messages where created_at >= ${debut}) as messages,
+          (select count(*)::int from llcfacile.chat where created_at >= ${debut}) as questions_lea,
+          (select count(distinct visiteur)::int from llcfacile.visites where created_at >= ${debut} and page ~ '/(commander|order)$') as visiteurs_commande`;
+      return json({ ok: true, jours, debut, en_ligne, total, precedent, rebond, serie, pages, sources, pays, langues, appareils, navigateurs,
+        conversions: { ...cmd, ...autres, encaisse_centimes: enc.centimes, paiements: enc.paiements } });
+    }
   }
   return json({ error: "action" }, 400);
 });

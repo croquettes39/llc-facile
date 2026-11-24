@@ -154,7 +154,7 @@ def layout(lang, key, title, desc, body, extra_head=""):
 </div>
 </footer>
 {chat_widget(lang)}
-<script src="/assets/site.js?v=6" defer></script>
+<script src="/assets/site.js?v=7" defer></script>
 </body>
 </html>
 '''

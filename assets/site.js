@@ -263,4 +263,32 @@
       });
     }
   }
+
+  // Mesure d'audience anonyme (pages vues + visiteurs en ligne). Aucune donnée personnelle.
+  (() => {
+    if (!/llcfacile\.com$|llc-facile.*\.vercel\.app$/.test(location.hostname) || navigator.webdriver) return;
+    const URL_STATS = 'https://gbdjiczesmhhsrqhvrgj.supabase.co/functions/v1/llcfacile-stats';
+    const rid = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
+    const get = (st, k) => { try { let v = st.getItem(k); if (!v) { v = rid(); st.setItem(k, v); } return v; } catch (e) { return rid(); } };
+    // Identifiant visiteur aléatoire, renouvelé tous les 13 mois au plus
+    let v;
+    try {
+      const raw = JSON.parse(localStorage.getItem('llcf-vid') || 'null');
+      if (raw && raw.id && Date.now() - raw.t < 395 * 864e5) v = raw.id;
+      else { v = rid(); localStorage.setItem('llcf-vid', JSON.stringify({ id: v, t: Date.now() })); }
+    } catch (e) { v = rid(); }
+    const sid = get(sessionStorage, 'llcf-sid');
+    const base = { v, s: sid, p: location.pathname, l: lang };
+    const send = (t, extra = {}) => {
+      const body = JSON.stringify({ t, ...base, ...extra });
+      try { if (navigator.sendBeacon && navigator.sendBeacon(URL_STATS, body)) return; } catch (e) { /* repli */ }
+      fetch(URL_STATS, { method: 'POST', body, keepalive: true, mode: 'no-cors' }).catch(() => {});
+    };
+    let tz = '';
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { /* rien */ }
+    send('pv', { r: document.referrer, u: new URLSearchParams(location.search).get('utm_source') || '', tz, w: screen.width });
+    setInterval(() => { if (document.visibilityState === 'visible') send('hb', { tz }); }, 25000);
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') send('hb', { tz }); });
+    addEventListener('pagehide', () => send('bye'));
+  })();
 }

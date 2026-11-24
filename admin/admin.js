@@ -309,6 +309,103 @@
       <p class="msg-body"><b>Q :</b> ${esc(m.question)}</p><p class="msg-body" style="color:#3B4656"><b>Léa :</b> ${esc(m.reponse || '—')}</p></div>`).join('') || '<p class="empty">Aucune question pour le moment.</p>';
   }
 
+  // ---------------- Statistiques ----------------
+  let stJours = 7, stTimer = null;
+  const nf = (n) => Number(n || 0).toLocaleString('fr-FR');
+  const LANGS = { fr: 'Français', ar: 'Darija', en: 'Anglais' };
+  const PAGES = { '/': 'Accueil', '/avantages': 'Avantages', '/comment-ca-marche': 'Comment ça marche', '/tarifs': 'Tarifs', '/faq': 'FAQ', '/commander': 'Commander', '/contact': 'Contact',
+    '/benefits': 'Avantages', '/how-it-works': 'Comment ça marche', '/pricing': 'Tarifs', '/order': 'Commander' };
+  const pageNom = (p) => {
+    const m = String(p || '/').replace(/\/$/, '') || '/';
+    const l = m.startsWith('/ar') ? 'ar' : m.startsWith('/en') ? 'en' : 'fr';
+    const rest = l === 'fr' ? m : (m.slice(3) || '/');
+    return (PAGES[rest] || rest) + (l === 'fr' ? '' : ' · ' + LANGS[l]);
+  };
+  const depuis = (d) => { const s = Math.max(0, Math.round((Date.now() - new Date(d)) / 1000)); return s < 60 ? s + ' s' : Math.round(s / 60) + ' min'; };
+  const evol = (a, b) => {
+    if (!b) return a ? '<span class="ev up">nouveau</span>' : '';
+    const p = Math.round((a - b) / b * 100);
+    return `<span class="ev ${p >= 0 ? 'up' : 'down'}">${p >= 0 ? '▲' : '▼'} ${Math.abs(p)} %</span>`;
+  };
+  const tile = (label, val, extra = '') => `<div class="tile"><span class="tl">${esc(label)}</span><b>${val}</b>${extra ? `<span class="tx">${extra}</span>` : ''}</div>`;
+
+  function renderLive(rows) {
+    $('#st-live-n').textContent = rows.length;
+    $('#st-live-maj').textContent = 'mis à jour à ' + new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    $('#st-live').innerHTML = rows.length ? `<div class="table-wrap"><table class="admin-table live-t"><thead><tr><th>Page en cours</th><th>Pays</th><th>Langue</th><th>Appareil</th><th>Venu de</th><th>Sur le site depuis</th></tr></thead><tbody>${
+      rows.map(r => `<tr><td><b>${esc(pageNom(r.page))}</b></td><td>${esc(r.pays || '')}</td><td>${esc(LANGS[r.langue] || r.langue || '')}</td><td>${esc(r.appareil || '')}</td><td>${esc(r.source || '')}</td><td>${depuis(r.debut)}</td></tr>`).join('')
+    }</tbody></table></div>` : '<p class="empty" style="padding:12px 0">Personne en ce moment.</p>';
+  }
+
+  function renderChart(serie) {
+    const max = Math.max(1, ...serie.map(d => d.visiteurs));
+    const W = 760, H = 200, pad = { l: 34, r: 8, t: 12, b: 28 };
+    const n = Math.max(serie.length, 1), bw = (W - pad.l - pad.r) / n, barW = Math.max(3, Math.min(28, bw - 2));
+    const y = (v) => pad.t + (H - pad.t - pad.b) * (1 - v / max);
+    const step = max <= 5 ? 1 : Math.ceil(max / 4);
+    let grid = '';
+    for (let v = 0; v <= max; v += step) grid += `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y(v)}" y2="${y(v)}" class="gl"/><text x="${pad.l - 6}" y="${y(v) + 4}" class="ax" text-anchor="end">${v}</text>`;
+    const every = Math.ceil(n / 10);
+    const lab = (x) => stJours === 1 ? x : new Date(x + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+    const bars = serie.map((d, i) => {
+      const cx = pad.l + bw * i + bw / 2, h = Math.max(0, H - pad.b - y(d.visiteurs));
+      const r = Math.min(4, barW / 2, h);
+      const x0 = cx - barW / 2, yb = H - pad.b;
+      const path = h > 0 ? `M${x0},${yb}V${yb - h + r}Q${x0},${yb - h} ${x0 + r},${yb - h}H${x0 + barW - r}Q${x0 + barW},${yb - h} ${x0 + barW},${yb - h + r}V${yb}Z` : '';
+      return `<g class="bar" tabindex="0" data-tip="${esc(lab(d.x))} : ${d.visiteurs} visiteur${d.visiteurs > 1 ? 's' : ''}, ${d.pages_vues} page${d.pages_vues > 1 ? 's' : ''} vue${d.pages_vues > 1 ? 's' : ''}">
+        <rect x="${pad.l + bw * i}" y="${pad.t}" width="${bw}" height="${H - pad.t - pad.b}" fill="transparent"/>${path ? `<path d="${path}"/>` : ''}
+        ${i % every === 0 ? `<text x="${cx}" y="${H - 8}" class="ax" text-anchor="middle">${esc(lab(d.x))}</text>` : ''}</g>`;
+    }).join('');
+    $('#st-chart').innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Visiteurs par ${stJours === 1 ? 'heure' : 'jour'}">${grid}<line x1="${pad.l}" x2="${W - pad.r}" y1="${H - pad.b}" y2="${H - pad.b}" class="base"/>${bars}</svg><div class="tip" hidden></div>`;
+    $('#st-chart').scrollLeft = 1e5;
+    const tip = $('#st-chart .tip');
+    $$('#st-chart .bar').forEach(g => {
+      const on = () => { tip.textContent = g.dataset.tip; tip.hidden = false; const r = g.getBoundingClientRect(), c = $('#st-chart').getBoundingClientRect(); tip.style.left = Math.min(Math.max(0, r.left - c.left + r.width / 2 - 90), c.width - 180) + 'px'; };
+      g.addEventListener('mouseenter', on); g.addEventListener('focus', on);
+      g.addEventListener('mouseleave', () => { tip.hidden = true; }); g.addEventListener('blur', () => { tip.hidden = true; });
+    });
+  }
+
+  function topList(titre, rows, fmt = (k) => k) {
+    const max = Math.max(1, ...rows.map(r => r.visiteurs));
+    return `<div class="panel"><h2>${esc(titre)}</h2>${rows.length ? `<ul class="toplist">${rows.map(r => `<li><span class="tk">${esc(fmt(r.k) || '—')}</span><span class="tv">${nf(r.visiteurs)}</span><span class="tb"><i style="width:${Math.round(r.visiteurs / max * 100)}%"></i></span></li>`).join('')}</ul>` : '<p class="hint">Pas encore de données.</p>'}</div>`;
+  }
+
+  async function loadStats() {
+    const d = await api('stats', { jours: stJours });
+    renderLive(d.en_ligne);
+    const t = d.total, p = d.precedent, c = d.conversions;
+    const vs = stJours === 1 ? 'vs hier' : `vs ${stJours} j précédents`;
+    $('#st-tiles').innerHTML =
+      tile('Visiteurs uniques', nf(t.visiteurs), evol(t.visiteurs, p.visiteurs) + ' ' + vs) +
+      tile('Visites', nf(t.visites), evol(t.visites, p.visites)) +
+      tile('Pages vues', nf(t.pages_vues), evol(t.pages_vues, p.pages_vues)) +
+      tile('Pages par visite', t.visites ? (t.pages_vues / t.visites).toLocaleString('fr-FR', { maximumFractionDigits: 1 }) : '0') +
+      tile('Taux de rebond', d.rebond + ' %', 'visites d’une seule page');
+    $('#st-chart-t').textContent = stJours === 1 ? 'Visiteurs par heure (aujourd’hui)' : 'Visiteurs par jour';
+    renderChart(d.serie);
+    const taux = t.visiteurs ? (c.commandes / t.visiteurs * 100).toLocaleString('fr-FR', { maximumFractionDigits: 1 }) + ' %' : '—';
+    $('#st-conv').innerHTML =
+      tile('Ont ouvert « Commander »', nf(c.visiteurs_commande)) +
+      tile('Commandes reçues', nf(c.commandes), 'conversion ' + taux) +
+      tile('Commandes payées', nf(c.payees)) +
+      tile('Encaissé (Stripe)', (c.encaisse_centimes / 100).toLocaleString('fr-FR', { maximumFractionDigits: 0 }) + ' €', nf(c.paiements) + ' paiement(s)') +
+      tile('Messages / questions à Léa', nf(c.messages) + ' / ' + nf(c.questions_lea));
+    $('#st-tops').innerHTML =
+      topList('Pages les plus vues', d.pages, pageNom) + topList('D’où viennent-ils ?', d.sources) +
+      topList('Pays', d.pays) + topList('Langue du site', d.langues, k => LANGS[k] || k) +
+      topList('Appareils', d.appareils) + topList('Navigateurs', d.navigateurs);
+  }
+  $$('#st-periode button').forEach(b => b.addEventListener('click', () => {
+    stJours = Number(b.dataset.j);
+    $$('#st-periode button').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+    loadStats().catch(e => toast('Erreur : ' + e.message));
+  }));
+  async function refreshLive() {
+    if (location.hash !== '#stats' || document.hidden) return;
+    try { const d = await api('stats', { jours: stJours }); renderLive(d.en_ligne); } catch (e) { /* prochain essai */ }
+  }
+
   // ---------------- Navigation ----------------
   async function route() {
     const h = location.hash.slice(1) || 'dossiers';
@@ -316,6 +413,7 @@
       if (h.startsWith('d/')) { show('v-dossier'); setNav(''); await loadDossier(h.slice(2)); }
       else if (h === 'messages') { show('v-messages'); setNav('messages'); await loadMessages(); }
       else if (h === 'chat') { show('v-chat'); setNav('chat'); await loadChat(); }
+      else if (h === 'stats') { show('v-stats'); setNav('stats'); await loadStats(); clearInterval(stTimer); stTimer = setInterval(refreshLive, 15000); }
       else { show('v-dossiers'); setNav('dossiers'); await loadList(); }
       window.scrollTo(0, 0);
     } catch (e) {
