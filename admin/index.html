@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin – LLC Facile</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css?v=5">
+<link rel="stylesheet" href="/admin/admin.css?v=2">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="/admin/" aria-label="LLC Facile admin">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D4A63A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"></rect><path d="M7.5 12.5l3 3 6-7"></path></svg>
+      <span><span class="l">LLC</span><span class="w">Facile</span><span class="c"> admin</span></span>
+    </a>
+    <nav class="admin-nav" id="admin-nav" hidden aria-label="Admin">
+      <a href="#dossiers" data-view="dossiers">Dossiers</a>
+      <a href="#messages" data-view="messages">Messages <span class="count" id="msg-count" hidden></span></a>
+      <a href="#chat" data-view="chat">Questions à Léa</a>
+      <a href="/" target="_blank" rel="noopener">Voir le site</a>
+      <button type="button" class="btn-link" id="logout">Se déconnecter</button>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap admin-main">
+
+  <!-- Connexion -->
+  <section id="v-login" class="login" hidden>
+    <h1>Espace admin</h1>
+    <p class="lead">Connectez-vous pour gérer les dossiers LLC Facile.</p>
+    <form id="login-form" class="card" novalidate>
+      <div class="f"><label for="l-email">E-mail</label><input id="l-email" type="email" autocomplete="username" required></div>
+      <div class="f"><label for="l-pass">Mot de passe</label><input id="l-pass" type="password" autocomplete="current-password" required></div>
+      <div class="alert err" id="login-err" role="alert" hidden></div>
+      <div class="alert ok" id="login-ok" role="status" hidden></div>
+      <button class="btn btn-gold" type="submit">Se connecter</button>
+      <div class="login-links">
+        <button type="button" class="btn-link" id="first-time">Première connexion : créer mon mot de passe</button>
+        <button type="button" class="btn-link" id="forgot">Mot de passe oublié</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Accès refusé -->
+  <section id="v-denied" hidden>
+    <h1>Accès réservé</h1>
+    <p class="lead">Ce compte n'a pas accès à l'administration LLC Facile.</p>
+    <button type="button" class="btn btn-navy" id="denied-logout">Changer de compte</button>
+  </section>
+
+  <!-- Liste des dossiers -->
+  <section id="v-dossiers" hidden>
+    <div class="admin-head">
+      <div><h1>Dossiers</h1><p class="hint" id="dossiers-sum"></p></div>
+      <div class="filters" role="group" aria-label="Filtrer">
+        <button type="button" data-f="a_traiter" aria-pressed="true">À traiter</button>
+        <button type="button" data-f="en_cours" aria-pressed="false">En cours</button>
+        <button type="button" data-f="nouvelle" aria-pressed="false">Non payés</button>
+        <button type="button" data-f="terminee" aria-pressed="false">Terminés</button>
+        <button type="button" data-f="tous" aria-pressed="false">Tous</button>
+      </div>
+    </div>
+    <input type="search" id="search" class="search" placeholder="Rechercher un nom, un e-mail, une référence…" aria-label="Rechercher">
+    <div class="table-wrap"><table class="admin-table" id="dossiers-table">
+      <thead><tr><th>Client</th><th>Formule</th><th>Paiement</th><th>Avancement</th><th>Statut</th><th>Reçu le</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <p class="empty" id="dossiers-empty" hidden>Aucun dossier ici pour le moment.</p>
+  </section>
+
+  <!-- Fiche dossier -->
+  <section id="v-dossier" hidden>
+    <a href="#dossiers" class="back-link">← Tous les dossiers</a>
+    <div id="dossier"></div>
+  </section>
+
+  <!-- Messages -->
+  <section id="v-messages" hidden>
+    <h1>Messages du formulaire Contact</h1>
+    <div id="messages-list" class="stack-list"></div>
+  </section>
+
+  <!-- Chat -->
+  <section id="v-chat" hidden>
+    <h1>Questions posées à Léa</h1>
+    <p class="hint">Les 200 dernières questions : utile pour savoir ce que les visiteurs veulent savoir.</p>
+    <div id="chat-list" class="stack-list"></div>
+  </section>
+
+  <p class="loading" id="loading" hidden>Chargement…</p>
+</main>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+<script src="/admin/admin.js?v=2" defer></script>
+</body>
+</html>

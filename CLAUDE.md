@@ -22,6 +22,11 @@ Déployé par Vercel à chaque push sur `main`. Pour toute modification, suivre 
 - Secrets : `STRIPE_WEBHOOK_SECRET`, `SMTP_PASS` (boîte contact@llcfacile.com chez LWS ; `SMTP_HOST` défaut mail.llcfacile.com, port 465).
 - Le guide client se régénère depuis `tools/guide/` (guide.html + make_pdf.py, Playwright ; adapter les chemins) : en cas de changement de formule ou de délai, le mettre à jour aussi.
 
+## Panel admin (llcfacile.com/admin)
+- `admin/index.html`, `admin/admin.js`, `admin/admin.css` (page non indexée). Connexion Supabase Auth (projet partagé avec Sundarly) ; accès réservé aux e-mails de `llcfacile.admins` (contact@llcfacile.com).
+- Fonction `llcfacile-admin` (verify_jwt) : liste, dossier, étapes cochées (`llcfacile.etapes`), suivi (statut, nom retenu, EIN, date de création, notes), liens signés vers les fichiers, dépôt de livrables (`<ref>/livrables/`), messages, questions à Léa.
+- Les démarches par formule (`STEPS`) et les messages WhatsApp pré-écrits (`WA`, fr + darija) sont dans `admin/admin.js`.
+
 ## Contact et assistante
 - Page Contact (3 langues) + boutons flottants WhatsApp et « Léa » sur toutes les pages (`chat_widget` dans `tools/build.py`, logique dans `assets/site.js`).
 - Fonction Supabase `llcfacile-contact` : `type: "message"` -> table `llcfacile.messages` ; `type: "chat"` -> Claude (secret `ANTHROPIC_API_KEY`, modèle `LLCFACILE_MODEL` ou claude-haiku-5-5), journal dans `llcfacile.chat`. Le texte de connaissance de Léa (prix, règles) est dans la constante `SYSTEM` : à mettre à jour avec les prix.
