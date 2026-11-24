@@ -280,7 +280,8 @@
       else { v = rid(); localStorage.setItem('llcf-vid', JSON.stringify({ id: v, t: Date.now() })); }
     } catch (e) { v = rid(); }
     const sid = get(sessionStorage, 'llcf-sid');
-    const base = { v, s: sid, p: location.pathname, l: lang };
+    const lg = (document.documentElement.lang || 'fr').slice(0, 2);
+    const base = { v, s: sid, p: location.pathname, l: lg };
     const send = (t, extra = {}) => {
       const body = JSON.stringify({ t, ...base, ...extra });
       try { if (navigator.sendBeacon && navigator.sendBeacon(URL_STATS, body)) return; } catch (e) { /* repli */ }
