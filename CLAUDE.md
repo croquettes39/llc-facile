@@ -20,7 +20,7 @@ Déployé par Vercel à chaque push sur `main`. Pour toute modification, suivre 
 ## Confirmation de paiement
 - Fonction Supabase `llcfacile-stripe` = webhook Stripe (`checkout.session.completed`) : ne traite que les paiements dont `client_reference_id` commence par `LLC-` (le compte Stripe est partagé avec d'autres activités). Marque la commande `payee` (ou `itin_paye_le`), journalise dans `llcfacile.paiements`, envoie au client l'e-mail de confirmation (fr/ar/en) avec le guide PDF `documents/guide-client-llc-facile.pdf`, et prévient `NOTIFY_EMAIL` (défaut contact@llcfacile.com).
 - Secrets : `STRIPE_WEBHOOK_SECRET`, `SMTP_PASS` (boîte contact@llcfacile.com chez LWS ; `SMTP_HOST` défaut mail.llcfacile.com, port 465).
-- Le guide client se régénère depuis /home/claude/guide (HTML + Playwright) : en cas de changement de formule ou de délai, le mettre à jour aussi.
+- Le guide client se régénère depuis `tools/guide/` (guide.html + make_pdf.py, Playwright ; adapter les chemins) : en cas de changement de formule ou de délai, le mettre à jour aussi.
 
 ## Contact et assistante
 - Page Contact (3 langues) + boutons flottants WhatsApp et « Léa » sur toutes les pages (`chat_widget` dans `tools/build.py`, logique dans `assets/site.js`).

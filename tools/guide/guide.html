@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Guide client LLC Facile</title>
+<style>
+@page { size: A4; margin: 18mm 16mm 20mm 16mm; }
+@page :first { margin: 0; }
+:root { --navy:#0B1A33; --ink:#0E1B2C; --gold:#D4A63A; --gold2:#E8A33D; --golddk:#8A6514; --ground:#F4F2EE; --line:#E2DED6; --muted:#3B4656; --soft:#B8C2D1; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { font-family: Inter, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+h1, h2, h3 { font-family: "Inter Display", Inter, sans-serif; margin: 0; line-height: 1.15; }
+h2 { font-size: 21pt; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4mm; }
+h3 { font-size: 13pt; font-weight: 700; }
+p { margin: 0 0 3mm; }
+.kicker { font-size: 8.5pt; font-weight: 700; color: var(--golddk); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 2mm; }
+.lead { font-size: 11.5pt; color: var(--muted); max-width: 165mm; margin-bottom: 6mm; }
+.page { page-break-before: always; }
+.avoid { break-inside: avoid; page-break-inside: avoid; }
+
+/* Couverture */
+.cover { width: 210mm; height: 297mm; background: var(--navy); color: #fff; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+.cover .band { height: 6mm; background: var(--gold); }
+.cover .top { padding: 18mm 20mm 0; display: flex; justify-content: space-between; align-items: center; }
+.logo { font-family: "Inter Display", sans-serif; font-style: italic; font-weight: 800; font-size: 20pt; }
+.logo .l { color: var(--gold); } .logo .w { color: #fff; } .logo .c { color: var(--soft); font-size: 14pt; }
+.cover .tag { font-size: 9pt; color: var(--soft); border: 1px solid #2A3B54; border-radius: 99px; padding: 2mm 4mm; }
+.cover .art { margin: 14mm auto 0; width: 165mm; background: #fff; border-radius: 6mm; padding: 6mm; }
+.cover .art img { width: 100%; display: block; }
+.cover .titles { padding: 14mm 20mm 0; }
+.cover h1 { font-size: 34pt; font-weight: 800; letter-spacing: -0.02em; }
+.cover h1 span { color: var(--gold); }
+.cover .sub { font-size: 13pt; color: var(--soft); margin-top: 5mm; max-width: 150mm; }
+.cover .foot { margin-top: auto; padding: 0 20mm 16mm; display: flex; gap: 10mm; font-size: 9.5pt; color: var(--soft); border-top: 1px solid #2A3B54; padding-top: 8mm; margin-left: 20mm; margin-right: 20mm; padding-left: 0; padding-right: 0; }
+.cover .foot b { color: #fff; display: block; font-size: 10.5pt; }
+
+/* Blocs */
+.card { border: 1px solid var(--line); border-radius: 4mm; padding: 5mm 6mm; background: #fff; }
+.soft { background: var(--ground); border: 0; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4mm; }
+.note { border-left: 1.2mm solid var(--gold); background: #FFF8EA; border-radius: 0 3mm 3mm 0; padding: 4mm 5mm; font-size: 9.5pt; color: #4A3A12; margin: 4mm 0; }
+ul.ticks { list-style: none; padding: 0; margin: 0; }
+ul.ticks li { padding-left: 6mm; position: relative; margin-bottom: 1.6mm; }
+ul.ticks li::before { content: ""; position: absolute; left: 0; top: 1.6mm; width: 2.6mm; height: 1.4mm; border-left: 0.5mm solid var(--golddk); border-bottom: 0.5mm solid var(--golddk); transform: rotate(-45deg); }
+
+/* Formules */
+.plan { border-radius: 4mm; padding: 5mm; border: 1px solid var(--line); }
+.plan.hi { border: 0.6mm solid var(--gold2); background: #FFF9EC; }
+.plan h3 { margin-bottom: 1mm; }
+.plan .d { font-size: 9pt; color: var(--muted); margin-bottom: 3mm; }
+.plan .dur { font-size: 9pt; font-weight: 700; color: var(--golddk); margin-top: 3mm; }
+.badge { display: inline-block; background: var(--gold2); color: var(--navy); font-size: 7.5pt; font-weight: 700; padding: 0.8mm 2.5mm; border-radius: 99px; margin-left: 2mm; vertical-align: middle; }
+
+/* Planning (Gantt) */
+.gantt { width: 100%; border-collapse: collapse; font-size: 9pt; margin-top: 2mm; }
+.gantt th { font-weight: 600; color: var(--muted); font-size: 8pt; text-align: left; padding: 0 0 2mm; border-bottom: 1px solid var(--line); }
+.gantt th.w { text-align: center; width: 16mm; }
+.gantt td { padding: 2.2mm 0; border-bottom: 1px solid #EEEAE3; vertical-align: middle; }
+.gantt td.name { width: 62mm; padding-right: 3mm; }
+.gantt td.name small { display: block; color: var(--muted); font-size: 7.5pt; }
+.gantt td.cell { position: relative; height: 7mm; padding: 0; border-left: 1px dashed #E6E1D8; }
+.bar { position: absolute; top: 2mm; height: 3.4mm; border-radius: 99px; background: var(--navy); }
+.bar.u { background: var(--golddk); } .bar.l { background: var(--gold2); } .bar.i { background: #7A8698; }
+.legend { display: flex; gap: 6mm; font-size: 8pt; color: var(--muted); margin-top: 3mm; flex-wrap: wrap; }
+.legend span::before { content: ""; display: inline-block; width: 6mm; height: 2.6mm; border-radius: 99px; margin-right: 2mm; vertical-align: middle; background: var(--c); }
+
+/* Étapes */
+.step { display: grid; grid-template-columns: 14mm 1fr; gap: 4mm; padding: 5mm 0; border-bottom: 1px solid var(--line); break-inside: avoid; page-break-inside: avoid; }
+.step:last-child { border-bottom: 0; }
+.num { width: 12mm; height: 12mm; border-radius: 50%; background: var(--navy); color: var(--gold); font-family: "Inter Display", sans-serif; font-weight: 800; font-size: 13pt; display: flex; align-items: center; justify-content: center; }
+.num.u { background: var(--golddk); color: #fff; } .num.l { background: var(--gold2); color: var(--navy); } .num.i { background: #7A8698; color: #fff; }
+.step .hd { display: flex; justify-content: space-between; align-items: baseline; gap: 4mm; margin-bottom: 2mm; }
+.delay { font-size: 8.5pt; font-weight: 700; color: var(--golddk); background: #FFF4DB; border-radius: 99px; padding: 0.8mm 3mm; white-space: nowrap; }
+.cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4mm; font-size: 9pt; }
+.cols b { display: block; font-size: 7.5pt; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 1mm; }
+.section-head { display: flex; align-items: center; gap: 4mm; margin: 2mm 0 2mm; }
+.pill { font-size: 8pt; font-weight: 700; padding: 1mm 3mm; border-radius: 99px; background: var(--ground); color: var(--muted); }
+
+table.simple { width: 100%; border-collapse: collapse; font-size: 9.5pt; }
+table.simple th { text-align: left; background: var(--navy); color: #fff; font-weight: 600; padding: 2.5mm 3mm; font-size: 8.5pt; }
+table.simple td { padding: 2.5mm 3mm; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.simple tr:nth-child(even) td { background: #FAF8F4; }
+
+.contact { background: var(--navy); color: #fff; border-radius: 5mm; padding: 8mm; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6mm; }
+.contact b { display: block; color: var(--gold); font-size: 8pt; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 1mm; }
+.contact span { font-size: 11pt; font-weight: 600; }
+.small { font-size: 8pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- COUVERTURE -->
+<section class="cover">
+  <div class="band"></div>
+  <div class="top">
+    <div class="logo"><span class="l">LLC</span><span class="w">Facile</span><span class="c">.com</span></div>
+    <div class="tag">Guide client · Édition 2026</div>
+  </div>
+  <div class="art"><img src="visuel.png" alt="LLC Facile"></div>
+  <div class="titles">
+    <h1>Votre LLC aux États-Unis,<br><span>étape par étape.</span></h1>
+    <p class="sub">Tout ce qui va se passer après votre commande : les étapes, les délais, ce que vous devez fournir et ce que vous allez recevoir, selon votre formule.</p>
+  </div>
+  <div class="foot">
+    <div><b>WhatsApp Maroc</b>+212 6 63 28 51 19</div>
+    <div><b>WhatsApp France / Europe</b>+33 7 80 80 31 30</div>
+    <div><b>E-mail</b>contact@llcfacile.com</div>
+  </div>
+</section>
+
+<!-- BIENVENUE -->
+<section class="page">
+  <div class="kicker">Bienvenue</div>
+  <h2>Merci pour votre confiance</h2>
+  <p class="lead">Vous avez choisi LLC Facile pour créer votre société américaine. Ce guide vous accompagne du premier jour jusqu'à la remise de votre dossier complet. Gardez-le : il répond à la plupart des questions que l'on nous pose.</p>
+
+  <div class="grid3 avoid" style="margin-bottom:6mm">
+    <div class="card soft"><h3>100 % en ligne</h3><p class="small" style="margin:2mm 0 0">Pas de visa, pas de voyage. Tout se fait à distance, depuis chez vous.</p></div>
+    <div class="card soft"><h3>Un interlocuteur</h3><p class="small" style="margin:2mm 0 0">Une personne dédiée vous suit sur WhatsApp, en français, en darija ou en anglais.</p></div>
+    <div class="card soft"><h3>Votre numéro de dossier</h3><p class="small" style="margin:2mm 0 0">Il commence par « LLC- ». Indiquez-le dans chacun de vos messages.</p></div>
+  </div>
+
+  <div class="kicker">Les formules</div>
+  <h3 style="margin-bottom:4mm">Ce que comprend votre formule</h3>
+  <div class="grid3 avoid">
+    <div class="plan">
+      <h3>Basic</h3>
+      <p class="d">Pour démarrer simplement et en toute sécurité.</p>
+      <ul class="ticks small">
+        <li>Création de la LLC au Wyoming, frais d'État inclus</li>
+        <li>Agent enregistré la 1<sup>re</sup> année</li>
+        <li>Operating agreement</li>
+        <li>Numéro EIN</li>
+        <li>Numéro de téléphone américain</li>
+        <li>Accompagnement de base</li>
+      </ul>
+      <p class="dur">Environ 1 à 3 semaines</p>
+    </div>
+    <div class="plan hi">
+      <h3>Ultimate <span class="badge">Le plus choisi</span></h3>
+      <p class="d">Pour encaisser vos clients rapidement.</p>
+      <ul class="ticks small">
+        <li>Tout le pack Basic</li>
+        <li>Accompagnement à l'ouverture d'un compte pro US (Mercury, Wise…)</li>
+        <li>Mise en place de Stripe et PayPal</li>
+        <li>Accompagnement complet</li>
+      </ul>
+      <p class="dur">Environ 2 à 5 semaines</p>
+    </div>
+    <div class="plan">
+      <h3>Ultimate Launch</h3>
+      <p class="d">Pour lancer votre boutique en ligne.</p>
+      <ul class="ticks small">
+        <li>Tout le pack Ultimate</li>
+        <li>Création et configuration de votre boutique Shopify</li>
+        <li>Paiements par carte via Stripe et PayPal</li>
+        <li>Lancement accompagné</li>
+      </ul>
+      <p class="dur">Environ 3 à 6 semaines</p>
+    </div>
+  </div>
+  <div class="note"><b>Option ITIN</b> (numéro fiscal américain personnel) : elle se traite en parallèle et prend plus de temps, car elle dépend uniquement de l'IRS. Voir page dédiée.</div>
+</section>
+
+<!-- PLANNING -->
+<section class="page">
+  <div class="kicker">Vue d'ensemble</div>
+  <h2>Votre calendrier en un coup d'œil</h2>
+  <p class="lead">Les délais ci-dessous sont indicatifs et comptés en semaines à partir de la réception de votre paiement et de votre dossier complet. Ils dépendent en partie de l'État du Wyoming, de l'IRS, des banques et des plateformes.</p>
+
+  <table class="gantt avoid">
+    <thead><tr><th>Étape</th><th class="w">Sem. 1</th><th class="w">Sem. 2</th><th class="w">Sem. 3</th><th class="w">Sem. 4</th><th class="w">Sem. 5</th><th class="w">Sem. 6</th></tr></thead>
+    <tbody>
+      <tr><td class="name">1. Commande et paiement<small>Toutes formules</small></td><td class="cell"><div class="bar" style="left:4%;width:12%"></div></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td></tr>
+      <tr><td class="name">2. Vérification du dossier et du nom<small>Toutes formules</small></td><td class="cell"><div class="bar" style="left:14%;width:30%"></div></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td></tr>
+      <tr><td class="name">3. Dépôt au Wyoming<small>Toutes formules</small></td><td class="cell"><div class="bar" style="left:40%;width:55%"></div></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td></tr>
+      <tr><td class="name">4. Operating agreement<small>Toutes formules</small></td><td class="cell"><div class="bar" style="left:70%;width:28%"></div></td><td class="cell"><div class="bar" style="left:0;width:20%"></div></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td></tr>
+      <tr><td class="name">5. Numéro EIN (IRS)<small>Toutes formules</small></td><td class="cell"></td><td class="cell"><div class="bar" style="left:5%;width:95%"></div></td><td class="cell"><div class="bar" style="left:0;width:100%;opacity:.35"></div></td><td class="cell"><div class="bar" style="left:0;width:60%;opacity:.35"></div></td><td class="cell"></td><td class="cell"></td></tr>
+      <tr><td class="name">6. Numéro de téléphone américain<small>Toutes formules</small></td><td class="cell"></td><td class="cell"><div class="bar" style="left:10%;width:40%"></div></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td></tr>
+      <tr><td class="name">7. Compte professionnel US<small>Ultimate et Launch</small></td><td class="cell"></td><td class="cell"></td><td class="cell"><div class="bar u" style="left:0;width:100%"></div></td><td class="cell"><div class="bar u" style="left:0;width:60%;opacity:.45"></div></td><td class="cell"></td><td class="cell"></td></tr>
+      <tr><td class="name">8. Stripe et PayPal<small>Ultimate et Launch</small></td><td class="cell"></td><td class="cell"></td><td class="cell"><div class="bar u" style="left:50%;width:50%"></div></td><td class="cell"><div class="bar u" style="left:0;width:100%"></div></td><td class="cell"><div class="bar u" style="left:0;width:40%;opacity:.45"></div></td><td class="cell"></td></tr>
+      <tr><td class="name">9. Boutique Shopify<small>Ultimate Launch</small></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"><div class="bar l" style="left:30%;width:70%"></div></td><td class="cell"><div class="bar l" style="left:0;width:100%"></div></td><td class="cell"><div class="bar l" style="left:0;width:70%"></div></td></tr>
+      <tr><td class="name">10. Remise du dossier complet<small>Toutes formules</small></td><td class="cell"></td><td class="cell"></td><td class="cell"><div class="bar" style="left:20%;width:30%"></div></td><td class="cell"></td><td class="cell"></td><td class="cell"></td></tr>
+    </tbody>
+  </table>
+  <div class="legend">
+    <span style="--c:var(--navy)">Toutes formules</span>
+    <span style="--c:var(--golddk)">Ultimate et Ultimate Launch</span>
+    <span style="--c:var(--gold2)">Ultimate Launch</span>
+    <span style="--c:#C9CED6">Zone claire = délai possible si l'organisme est plus lent</span>
+  </div>
+
+  <div class="grid3 avoid" style="margin-top:8mm">
+    <div class="card"><div class="kicker">Basic</div><h3>1 à 3 semaines</h3><p class="small" style="margin-top:2mm">Le délai dépend surtout de l'IRS pour l'EIN.</p></div>
+    <div class="card"><div class="kicker">Ultimate</div><h3>2 à 5 semaines</h3><p class="small" style="margin-top:2mm">S'ajoute la validation du compte bancaire et de Stripe.</p></div>
+    <div class="card"><div class="kicker">Ultimate Launch</div><h3>3 à 6 semaines</h3><p class="small" style="margin-top:2mm">S'ajoutent la création et le lancement de la boutique.</p></div>
+  </div>
+</section>
+
+<!-- DOCUMENTS -->
+<section class="page">
+  <div class="kicker">Avant de commencer</div>
+  <h2>Ce dont nous avons besoin</h2>
+  <p class="lead">Un dossier complet dès le départ, c'est plusieurs jours gagnés. Tout est demandé dans le formulaire de commande : vérifiez simplement que rien ne manque.</p>
+  <table class="simple avoid">
+    <thead><tr><th style="width:36%">Élément</th><th>Précisions</th><th style="width:24%">Formules</th></tr></thead>
+    <tbody>
+      <tr><td><b>Passeport en cours de validité</b></td><td>Photo ou scan de la page avec la photo, bien lisible, les quatre coins visibles. À défaut, carte d'identité.</td><td>Toutes</td></tr>
+      <tr><td><b>Adresse personnelle complète</b></td><td>Telle qu'elle figure sur vos justificatifs. Elle n'apparaît pas sur le registre public du Wyoming.</td><td>Toutes</td></tr>
+      <tr><td><b>Trois noms de société</b></td><td>Par ordre de préférence, en lettres latines. Nous gardons le premier disponible au Wyoming.</td><td>Toutes</td></tr>
+      <tr><td><b>Description de l'activité</b></td><td>Ce que vous vendez, à qui, et comment vous êtes payé. Les banques et Stripe la demandent aussi.</td><td>Toutes</td></tr>
+      <tr><td><b>Associés et parts</b></td><td>Nom complet de chaque associé et pourcentage. Chaque associé fournit aussi son passeport.</td><td>Toutes, si plusieurs associés</td></tr>
+      <tr><td><b>Site web ou réseaux sociaux</b></td><td>Un site, une boutique ou une page professionnelle aide beaucoup pour Stripe et la banque.</td><td>Ultimate et Launch</td></tr>
+      <tr><td><b>Justificatif de domicile récent</b></td><td>Facture ou attestation de moins de 3 mois, souvent demandée par la banque.</td><td>Ultimate et Launch</td></tr>
+      <tr><td><b>Produits, logo, textes</b></td><td>Photos, descriptions et prix de vos produits, votre logo et vos couleurs.</td><td>Ultimate Launch</td></tr>
+    </tbody>
+  </table>
+  <div class="note">Nous ne vous demanderons <b>jamais</b> votre mot de passe bancaire ni le code de votre carte. Les documents sont transmis par le formulaire sécurisé du site, pas par messagerie publique.</div>
+</section>
+
+<!-- ÉTAPES COMMUNES -->
+<section class="page">
+  <div class="section-head"><div class="kicker" style="margin:0">Étapes communes</div><span class="pill">Basic · Ultimate · Ultimate Launch</span></div>
+  <h2>La création de votre LLC</h2>
+  <p class="lead">Ces étapes concernent toutes les formules. Pour chacune : ce que nous faisons, ce que vous faites, et ce que vous recevez.</p>
+
+  <div class="step"><div class="num">1</div><div>
+    <div class="hd"><h3>Commande et paiement</h3><span class="delay">Immédiat</span></div>
+    <div class="cols"><div><b>Nous</b>Nous recevons votre formulaire, votre pièce d'identité et la confirmation de paiement.</div><div><b>Vous</b>Remplissez le formulaire sur llcfacile.com/commander, puis payez par carte sur la page sécurisée Stripe.</div><div><b>Vous recevez</b>Votre numéro de dossier et un message de bienvenue sur WhatsApp.</div></div>
+  </div></div>
+
+  <div class="step"><div class="num">2</div><div>
+    <div class="hd"><h3>Vérification du dossier et du nom</h3><span class="delay">24 à 48 h ouvrées</span></div>
+    <div class="cols"><div><b>Nous</b>Nous vérifions votre identité, votre activité et la disponibilité de vos noms au registre du Wyoming.</div><div><b>Vous</b>Répondez rapidement si nous avons une question ou si un nom n'est pas disponible.</div><div><b>Vous recevez</b>La confirmation du nom retenu pour votre société.</div></div>
+  </div></div>
+
+  <div class="step"><div class="num">3</div><div>
+    <div class="hd"><h3>Dépôt de la société au Wyoming</h3><span class="delay">1 à 3 jours ouvrés</span></div>
+    <div class="cols"><div><b>Nous</b>Nous déposons les statuts (Articles of Organization) auprès de l'État et désignons l'agent enregistré.</div><div><b>Vous</b>Rien à faire.</div><div><b>Vous recevez</b>Les statuts enregistrés : votre LLC existe officiellement.</div></div>
+  </div></div>
+
+  <div class="step"><div class="num">4</div><div>
+    <div class="hd"><h3>Operating agreement</h3><span class="delay">1 à 2 jours ouvrés</span></div>
+    <div class="cols"><div><b>Nous</b>Nous préparons le règlement intérieur de votre LLC : qui la possède, qui la dirige, comment.</div><div><b>Vous</b>Relisez-le et signez-le (signature électronique).</div><div><b>Vous recevez</b>Votre operating agreement signé, demandé par les banques.</div></div>
+  </div></div>
+
+  <div class="step"><div class="num">5</div><div>
+    <div class="hd"><h3>Numéro EIN</h3><span class="delay">Environ 4 jours ouvrés à 4 semaines</span></div>
+    <div class="cols"><div><b>Nous</b>Nous préparons et envoyons la demande à l'IRS (formulaire SS-4), sans numéro de sécurité sociale.</div><div><b>Vous</b>Signez la demande que nous vous envoyons.</div><div><b>Vous recevez</b>La lettre de l'IRS avec votre EIN, le numéro fiscal de votre société.</div></div>
+  </div></div>
+
+  <div class="step"><div class="num">6</div><div>
+    <div class="hd"><h3>Numéro de téléphone américain</h3><span class="delay">1 à 3 jours ouvrés</span></div>
+    <div class="cols"><div><b>Nous</b>Nous activons un numéro américain au nom de votre activité.</div><div><b>Vous</b>Installez l'application indiquée pour recevoir appels et SMS.</div><div><b>Vous recevez</b>Votre numéro US et ses accès.</div></div>
+  </div></div>
+
+  <div class="step"><div class="num">7</div><div>
+    <div class="hd"><h3>Remise du dossier (Basic)</h3><span class="delay">Dès l'EIN reçu</span></div>
+    <div class="cols"><div><b>Nous</b>Nous rassemblons tous vos documents et vous expliquons la suite.</div><div><b>Vous</b>Conservez précieusement ces documents.</div><div><b>Vous recevez</b>Votre dossier complet en PDF (liste en fin de guide).</div></div>
+  </div></div>
+</section>
+
+<!-- ULTIMATE -->
+<section class="page">
+  <div class="section-head"><div class="kicker" style="margin:0">En plus</div><span class="pill">Ultimate · Ultimate Launch</span></div>
+  <h2>Encaisser vos clients</h2>
+  <p class="lead">Une fois l'EIN obtenu, nous vous accompagnons pour ouvrir votre compte professionnel américain et activer les paiements par carte.</p>
+
+  <div class="step"><div class="num u">8</div><div>
+    <div class="hd"><h3>Compte professionnel US</h3><span class="delay">Environ 3 à 10 jours ouvrés</span></div>
+    <div class="cols"><div><b>Nous</b>Nous préparons votre demande auprès d'une banque en ligne compatible (Mercury, Wise Business…) avec vos documents.</div><div><b>Vous</b>Validez votre identité dans l'application de la banque (selfie, pièce d'identité) et répondez à ses questions.</div><div><b>Vous recevez</b>Un compte en dollars au nom de votre LLC, et souvent une carte.</div></div>
+  </div></div>
+
+  <div class="step"><div class="num u">9</div><div>
+    <div class="hd"><h3>Stripe</h3><span class="delay">Environ 1 à 7 jours ouvrés</span></div>
+    <div class="cols"><div><b>Nous</b>Nous vous guidons pour créer et paramétrer votre compte Stripe américain.</div><div><b>Vous</b>Vérifiez votre identité et reliez votre compte bancaire US.</div><div><b>Vous recevez</b>Un compte Stripe prêt à encaisser par carte.</div></div>
+  </div></div>
+
+  <div class="step"><div class="num u">10</div><div>
+    <div class="hd"><h3>PayPal Business</h3><span class="delay">Environ 1 à 5 jours ouvrés</span></div>
+    <div class="cols"><div><b>Nous</b>Nous vous guidons pour ouvrir un compte PayPal professionnel au nom de la LLC.</div><div><b>Vous</b>Confirmez votre e-mail et vos informations.</div><div><b>Vous recevez</b>Un second moyen de paiement pour vos clients.</div></div>
+  </div></div>
+
+  <div class="note">L'ouverture d'un compte bancaire, Stripe ou PayPal est décidée par chaque établissement. Nous mettons toutes les chances de votre côté, mais nous ne pouvons pas garantir leur accord. Un site professionnel et une activité clairement décrite aident beaucoup.</div>
+</section>
+
+<!-- LAUNCH -->
+<section class="page">
+  <div class="section-head"><div class="kicker" style="margin:0">En plus</div><span class="pill">Ultimate Launch</span></div>
+  <h2>Lancer votre boutique</h2>
+  <p class="lead">Avec Ultimate Launch, nous créons votre boutique Shopify et la connectons à vos moyens de paiement.</p>
+
+  <div class="step"><div class="num l">11</div><div>
+    <div class="hd"><h3>Création de la boutique Shopify</h3><span class="delay">Environ 5 à 10 jours ouvrés</span></div>
+    <div class="cols"><div><b>Nous</b>Nous créons la boutique : thème, pages, mentions, catégories et fiches produits de départ.</div><div><b>Vous</b>Envoyez vos produits, photos, prix, logo et couleurs. Validez les maquettes.</div><div><b>Vous recevez</b>L'accès propriétaire à votre boutique.</div></div>
+  </div></div>
+
+  <div class="step"><div class="num l">12</div><div>
+    <div class="hd"><h3>Paiements sur la boutique</h3><span class="delay">1 à 2 jours ouvrés</span></div>
+    <div class="cols"><div><b>Nous</b>Nous branchons Stripe et PayPal sur Shopify et faisons un paiement test.</div><div><b>Vous</b>Validez la commande test.</div><div><b>Vous recevez</b>Une boutique qui encaisse par carte.</div></div>
+  </div></div>
+
+  <div class="step"><div class="num l">13</div><div>
+    <div class="hd"><h3>Lancement accompagné</h3><span class="delay">1 à 3 jours ouvrés</span></div>
+    <div class="cols"><div><b>Nous</b>Dernières vérifications, mise en ligne et conseils pour vos premières ventes.</div><div><b>Vous</b>Annoncez votre boutique à votre communauté.</div><div><b>Vous recevez</b>Votre boutique en ligne et votre dossier complet.</div></div>
+  </div></div>
+
+  <div class="note"><b>Shopify Payments</b> n'est pas inclus : Shopify exige un numéro de sécurité sociale (SSN) ou un ITIN, même avec une LLC et un EIN. C'est pourquoi votre boutique encaisse avec Stripe et PayPal. Pour tenter Shopify Payments plus tard, voir l'option ITIN.</div>
+</section>
+
+<!-- ITIN -->
+<section class="page">
+  <div class="section-head"><div class="kicker" style="margin:0">Option</div><span class="pill">ITIN</span></div>
+  <h2>L'option ITIN</h2>
+  <p class="lead">L'ITIN est un numéro fiscal américain <b>personnel</b> (à ne pas confondre avec l'EIN, celui de la société). La plupart des clients n'en ont pas besoin. Il est surtout utile pour Shopify Payments et certains services américains.</p>
+
+  <div class="step"><div class="num i">A</div><div>
+    <div class="hd"><h3>Préparation du dossier</h3><span class="delay">3 à 5 jours ouvrés</span></div>
+    <div class="cols"><div><b>Nous</b>Nous préparons le formulaire W-7 et les pièces justificatives demandées par l'IRS.</div><div><b>Vous</b>Fournissez les documents demandés et signez le formulaire.</div><div><b>Vous recevez</b>Votre dossier prêt à envoyer.</div></div>
+  </div></div>
+
+  <div class="step"><div class="num i">B</div><div>
+    <div class="hd"><h3>Envoi et suivi auprès de l'IRS</h3><span class="delay">Environ 7 à 11 semaines</span></div>
+    <div class="cols"><div><b>Nous</b>Nous envoyons le dossier et suivons son avancement.</div><div><b>Vous</b>Prévenez-nous si vous recevez un courrier de l'IRS.</div><div><b>Vous recevez</b>Votre lettre d'attribution de l'ITIN.</div></div>
+  </div></div>
+
+  <div class="note">L'attribution de l'ITIN est décidée par l'IRS seul et n'est pas garantie. Les délais de l'IRS varient selon la période de l'année.</div>
+</section>
+
+<!-- APRÈS -->
+<section class="page">
+  <div class="kicker">Après la création</div>
+  <h2>Garder votre LLC en règle</h2>
+  <p class="lead">Une LLC a quelques obligations chaque année. Elles sont simples, mais un oubli peut coûter cher. Avec la maintenance annuelle LLC Facile, nous nous en occupons pour vous.</p>
+
+  <table class="simple avoid">
+    <thead><tr><th style="width:32%">Obligation</th><th>Quand</th><th style="width:30%">Avec la maintenance</th></tr></thead>
+    <tbody>
+      <tr><td><b>Agent enregistré au Wyoming</b></td><td>En permanence : obligatoire pour garder la société active.</td><td>Renouvelé pour vous</td></tr>
+      <tr><td><b>Rapport annuel du Wyoming</b></td><td>Chaque année, avant le 1<sup>er</sup> jour du mois anniversaire de la création. Taxe minimale de 60 $.</td><td>Déposé pour vous</td></tr>
+      <tr><td><b>Déclaration fédérale Form 5472 + 1120 pro forma</b></td><td>Chaque année, pour une LLC à associé unique détenue par une personne non américaine.</td><td>Préparée pour vous</td></tr>
+      <tr><td><b>Comptabilité de la LLC</b></td><td>Toute l'année : gardez vos factures et relevés.</td><td>Rappels et conseils</td></tr>
+    </tbody>
+  </table>
+
+  <div class="grid2 avoid" style="margin-top:6mm">
+    <div class="card soft">
+      <h3 style="margin-bottom:2mm">Maintenance annuelle</h3>
+      <p class="small">À partir de la 2<sup>e</sup> année, pour 12 mois. Nous vous envoyons un rappel environ 30 jours avant l'échéance, avec le lien de paiement. Pas de prélèvement automatique : elle n'est renouvelée que si vous le souhaitez.</p>
+    </div>
+    <div class="card soft">
+      <h3 style="margin-bottom:2mm">Les bons réflexes</h3>
+      <ul class="ticks small">
+        <li>Utilisez le compte de la LLC uniquement pour l'activité.</li>
+        <li>Conservez toutes vos factures et vos relevés.</li>
+        <li>Prévenez-nous de tout changement (adresse, associés).</li>
+        <li>Transférez-nous tout courrier officiel reçu.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note"><b>Important :</b> LLC Facile est un service d'accompagnement administratif. Nous ne donnons pas de conseil fiscal ou juridique. Selon votre pays de résidence, vous pouvez rester imposable chez vous et avoir des obligations de déclaration, notamment en matière de change (Office des Changes au Maroc). Faites-vous conseiller par un expert-comptable ou un fiscaliste.</div>
+</section>
+
+<!-- DOCUMENTS REÇUS + CONTACT -->
+<section class="page">
+  <div class="kicker">Votre dossier final</div>
+  <h2>Ce que vous recevez</h2>
+  <p class="lead">À la fin de votre accompagnement, vous recevez un dossier complet en PDF. Gardez-le en lieu sûr : banques et plateformes vous le demanderont.</p>
+
+  <table class="simple avoid">
+    <thead><tr><th style="width:40%">Document</th><th>À quoi il sert</th><th style="width:22%">Formules</th></tr></thead>
+    <tbody>
+      <tr><td><b>Articles of Organization</b></td><td>Les statuts enregistrés par l'État : la preuve que votre LLC existe.</td><td>Toutes</td></tr>
+      <tr><td><b>Operating agreement</b></td><td>Le règlement de votre LLC : propriétaires, parts, direction.</td><td>Toutes</td></tr>
+      <tr><td><b>Lettre EIN de l'IRS</b></td><td>Votre numéro fiscal de société : banque, Stripe, factures.</td><td>Toutes</td></tr>
+      <tr><td><b>Coordonnées de l'agent enregistré</b></td><td>L'adresse officielle de votre LLC au Wyoming.</td><td>Toutes</td></tr>
+      <tr><td><b>Numéro de téléphone américain</b></td><td>Pour les vérifications des banques et plateformes.</td><td>Toutes</td></tr>
+      <tr><td><b>Accès banque, Stripe et PayPal</b></td><td>Vos comptes pour encaisser et recevoir l'argent.</td><td>Ultimate et Launch</td></tr>
+      <tr><td><b>Accès propriétaire Shopify</b></td><td>Votre boutique prête à vendre.</td><td>Ultimate Launch</td></tr>
+      <tr><td><b>Lettre ITIN</b></td><td>Votre numéro fiscal personnel américain.</td><td>Option ITIN</td></tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:10mm" class="avoid">
+    <div class="kicker">Une question ?</div>
+    <h3 style="margin-bottom:4mm">Nous sommes là, à chaque étape</h3>
+    <div class="contact">
+      <div><b>WhatsApp Maroc</b><span>+212 6 63 28 51 19</span></div>
+      <div><b>WhatsApp France / Europe</b><span>+33 7 80 80 31 30</span></div>
+      <div><b>E-mail</b><span>contact@llcfacile.com</span></div>
+    </div>
+    <p class="small" style="margin-top:4mm">Indiquez toujours votre numéro de dossier (LLC-…). Assistante en ligne 24 h/24 sur <b>llcfacile.com</b>.</p>
+  </div>
+
+  <p class="small" style="margin-top:10mm">LLC Facile est une marque de Sovereignlife immo, SARL de droit marocain au capital de 10 000 MAD, RC 722751 (tribunal de Casablanca), ICE 003909399000075. Les délais indiqués dans ce guide sont donnés à titre indicatif et dépendent d'organismes tiers (État du Wyoming, IRS, banques, plateformes). Conditions générales de vente sur llcfacile.com/cgv.</p>
+</section>
+
+</body>
+</html>
