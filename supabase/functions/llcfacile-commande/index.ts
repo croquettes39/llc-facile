@@ -6,6 +6,11 @@ import postgres from "npm:postgres@3.4.5";
 const ORIGINS = ["https://llcfacile.com", "https://www.llcfacile.com", "https://llc-facile.vercel.app"];
 const PRIX = { basic: [299, 3290], ultimate: [499, 5390], ultimate_launch: [699, 7590] } as const;
 const ITIN = [249, 2690];
+// Liens de paiement Stripe (Payment Links). Un secret STRIPE_LINK_<FORMULE>[_ITIN] peut les remplacer.
+// Sans lien pour la combinaison exacte (formule + option ITIN), le client reçoit le lien sur WhatsApp.
+const LINKS: Record<string, string> = {
+  STRIPE_LINK_BASIC: "https://buy.stripe.com/7sY6oJ2od9mQ8Yc4b85J60p",
+};
 const TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "application/pdf"];
 const EXT: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/heic": "heic", "application/pdf": "pdf" };
 
@@ -103,7 +108,8 @@ Deno.serve(async (req) => {
 
   // Lien de paiement Stripe (Payment Link) par formule, réglé dans les secrets de la fonction.
   const cle = `STRIPE_LINK_${formule.toUpperCase()}${itin ? "_ITIN" : ""}`;
-  const lien = Deno.env.get(cle) ?? Deno.env.get(`STRIPE_LINK_${formule.toUpperCase()}`) ?? null;
+  const lien = Deno.env.get(cle) ?? LINKS[cle] ?? null;
+  // Les liens Stripe encaissent en euros (le prix en dirhams est indicatif, cf. CGV).
   const paiement = lien ? `${lien}${lien.includes("?") ? "&" : "?"}client_reference_id=${ref}&prefilled_email=${encodeURIComponent(email)}` : null;
 
   return json({ ok: true, reference: ref, montant, devise, paiement });
