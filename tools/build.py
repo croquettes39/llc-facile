@@ -249,7 +249,7 @@ def p_home(lang):
 <a class="btn btn-line" href="{href(lang, "pricing")}">{e(h["see_prices"])}</a></div>
 <ul class="ticks">{ticks}</ul>
 </div>
-<div class="pic"><img src="/hero.jpg" width="1200" height="800" fetchpriority="high" alt="{e(h["img_alt"])}"></div>
+<div class="pic"><img src="/hero.jpg?v=2" width="1200" height="800" fetchpriority="high" alt="{e(h["img_alt"])}"></div>
 </div></section>
 <section class="band white" style="border-top:0"><div class="wrap">
 <div class="head"><span class="kicker">{e(h["who_k"])}</span><h2>{e(h["who_t"])}</h2></div>
