@@ -150,3 +150,31 @@ T = {
                "wa_ref": "Bonjour, je viens d'envoyer ma demande de LLC. Mon numéro de dossier :"},
     },
 }
+
+T["nav"]["contact"] = "Contact"
+T["seo"]["contact"] = ("Nous contacter – WhatsApp, e-mail et assistante – LLC Facile", "Contactez LLC Facile par WhatsApp (Maroc ou France), par e-mail ou via notre assistante en ligne. Réponse en français, en darija ou en anglais.")
+T["contact"] = {
+    "k": "Contact", "title": "Nous contacter",
+    "lead": "Une question sur votre LLC ? Écrivez-nous sur WhatsApp, par e-mail, ou posez votre question à Léa, notre assistante en ligne.",
+    "wa_ma_t": "WhatsApp Maroc", "wa_fr_t": "WhatsApp France / Europe", "wa_d": "Réponse rapide, en français ou en darija.", "wa_btn": "Ouvrir WhatsApp",
+    "mail_t": "E-mail", "mail_d": "Pour les documents et les demandes détaillées.", "mail_btn": "Écrire un e-mail",
+    "bot_t": "Léa, assistante en ligne", "bot_d": "Réponses immédiates à vos questions, 24 h/24, à l'écrit ou à voix haute.", "bot_btn": "Parler avec Léa",
+    "form_t": "Envoyer un message", "form_lead": "On vous répond par e-mail ou WhatsApp, en général dans la journée.",
+    "nom": "Nom et prénom", "email": "E-mail", "tel": "Téléphone WhatsApp (facultatif)", "sujet": "Sujet",
+    "sujets": [("question", "Question sur la création d'une LLC"), ("tarifs", "Tarifs et formules"), ("commande", "Suivi de ma commande"), ("maintenance", "Maintenance annuelle"), ("autre", "Autre")],
+    "message": "Votre message", "send": "Envoyer",
+    "ok": "Merci, votre message est bien envoyé. Nous vous répondons très vite.",
+    "err": "L'envoi n'a pas abouti. Vérifiez les champs ou écrivez-nous sur WhatsApp.",
+    "company": "LLC Facile est une marque de Sovereignlife immo, SARL de droit marocain (RC 722751, Casablanca).",
+}
+T["chat"] = {
+    "open": "Discuter avec Léa", "wa": "WhatsApp", "wa_ma": "WhatsApp Maroc", "wa_fr": "WhatsApp France / Europe",
+    "name": "Léa", "role": "Assistante LLC Facile", "close": "Fermer", "voice_on": "Activer la voix", "voice_off": "Couper la voix",
+    "hello": "Bonjour, je suis Léa, l'assistante de LLC Facile. Posez-moi vos questions sur la création de votre LLC aux États-Unis.",
+    "chips": ["Quelles formules proposez-vous ?", "Puis-je utiliser Stripe depuis le Maroc ?", "Quels documents faut-il ?"],
+    "placeholder": "Écrivez votre question…", "send": "Envoyer", "mic": "Parler", "listening": "Je vous écoute…",
+    "thinking": "Léa écrit…",
+    "fallback": "Je ne peux pas répondre pour le moment. Écrivez-nous sur WhatsApp, on vous répond rapidement.",
+    "note": "Assistante IA : réponses indicatives, sans conseil fiscal ni juridique.",
+    "speech": "fr-FR",
+}

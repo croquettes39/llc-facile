@@ -150,3 +150,31 @@ T = {
                "wa_ref": "Hello, I have just sent my LLC request. My file number:"},
     },
 }
+
+T["nav"]["contact"] = "Contact"
+T["seo"]["contact"] = ("Contact us – WhatsApp, email and assistant – LLC Facile", "Contact LLC Facile on WhatsApp (Morocco or France), by email or through our online assistant.")
+T["contact"] = {
+    "k": "Contact", "title": "Contact us",
+    "lead": "A question about your LLC? Message us on WhatsApp, by email, or ask Léa, our online assistant.",
+    "wa_ma_t": "WhatsApp Morocco", "wa_fr_t": "WhatsApp France / Europe", "wa_d": "Fast replies, in French, Darija or English.", "wa_btn": "Open WhatsApp",
+    "mail_t": "Email", "mail_d": "For documents and detailed requests.", "mail_btn": "Send an email",
+    "bot_t": "Léa, online assistant", "bot_d": "Instant answers to your questions, 24/7, in writing or out loud.", "bot_btn": "Talk to Léa",
+    "form_t": "Send us a message", "form_lead": "We reply by email or WhatsApp, usually the same day.",
+    "nom": "Full name", "email": "Email", "tel": "WhatsApp number (optional)", "sujet": "Subject",
+    "sujets": [("question", "Question about forming an LLC"), ("tarifs", "Pricing and packages"), ("commande", "My order"), ("maintenance", "Annual compliance"), ("autre", "Other")],
+    "message": "Your message", "send": "Send",
+    "ok": "Thank you, your message has been sent. We will get back to you shortly.",
+    "err": "Sending failed. Check the fields or message us on WhatsApp.",
+    "company": "LLC Facile is a brand of Sovereignlife immo, a Moroccan SARL (RC 722751, Casablanca).",
+}
+T["chat"] = {
+    "open": "Chat with Léa", "wa": "WhatsApp", "wa_ma": "WhatsApp Morocco", "wa_fr": "WhatsApp France / Europe",
+    "name": "Léa", "role": "LLC Facile assistant", "close": "Close", "voice_on": "Turn voice on", "voice_off": "Turn voice off",
+    "hello": "Hello, I'm Léa, LLC Facile's assistant. Ask me anything about forming your US LLC.",
+    "chips": ["Which packages do you offer?", "Can I use Stripe from Morocco?", "Which documents do I need?"],
+    "placeholder": "Type your question…", "send": "Send", "mic": "Speak", "listening": "Listening…",
+    "thinking": "Léa is typing…",
+    "fallback": "I can't answer right now. Message us on WhatsApp and we'll reply quickly.",
+    "note": "AI assistant: indicative answers, no tax or legal advice.",
+    "speech": "en-GB",
+}

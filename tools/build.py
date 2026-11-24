@@ -18,13 +18,14 @@ LANGS = {"fr": FR, "ar": AR, "en": EN}
 PREFIX = {"fr": "", "ar": "/ar", "en": "/en"}
 # clé de page -> chemin (sans préfixe de langue)
 SLUGS = {
-    "fr": {"home": "/", "benefits": "/avantages", "how": "/comment-ca-marche", "pricing": "/tarifs", "faq": "/faq", "order": "/commander"},
-    "ar": {"home": "/", "benefits": "/avantages", "how": "/comment-ca-marche", "pricing": "/tarifs", "faq": "/faq", "order": "/commander"},
-    "en": {"home": "/", "benefits": "/benefits", "how": "/how-it-works", "pricing": "/pricing", "faq": "/faq", "order": "/order"},
+    "fr": {"home": "/", "benefits": "/avantages", "how": "/comment-ca-marche", "pricing": "/tarifs", "faq": "/faq", "order": "/commander", "contact": "/contact"},
+    "ar": {"home": "/", "benefits": "/avantages", "how": "/comment-ca-marche", "pricing": "/tarifs", "faq": "/faq", "order": "/commander", "contact": "/contact"},
+    "en": {"home": "/", "benefits": "/benefits", "how": "/how-it-works", "pricing": "/pricing", "faq": "/faq", "order": "/order", "contact": "/contact"},
 }
-NAV = ["benefits", "how", "pricing", "faq"]
+NAV = ["benefits", "how", "pricing", "faq", "contact"]
 WA_MA = "212663285119"
 WA_FR = "33780803130"
+CONTACT_URL = "https://gbdjiczesmhhsrqhvrgj.supabase.co/functions/v1/llcfacile-contact"
 FUNCTION_URL = "https://gbdjiczesmhhsrqhvrgj.supabase.co/functions/v1/llcfacile-commande"
 PRICES = {"basic": (299, 3290), "ultimate": (499, 5390), "ultimate_launch": (699, 7590)}
 ITIN = (249, 2690)
@@ -117,7 +118,7 @@ def layout(lang, key, title, desc, body, extra_head=""):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?{fonts}&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css?v=3">
+<link rel="stylesheet" href="/assets/site.css?v=5">
 {extra_head}
 </head>
 <body>
@@ -150,7 +151,8 @@ def layout(lang, key, title, desc, body, extra_head=""):
 <p class="legal">{e(t["disclaimer"])}</p>
 </div>
 </footer>
-<script src="/assets/site.js?v=1" defer></script>
+{chat_widget(lang)}
+<script src="/assets/site.js?v=2" defer></script>
 </body>
 </html>
 '''
@@ -430,7 +432,74 @@ def p_order(lang):
     return body, '<meta name="robots" content="index, follow">'
 
 
-PAGES = {"home": p_home, "benefits": p_benefits, "how": p_how, "pricing": p_pricing, "faq": p_faq, "order": p_order}
+
+WA_ICON = '<svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>'
+BOT_ICON = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg>'
+
+
+def chat_widget(lang):
+    c = LANGS[lang]["chat"]
+    i18n = {k: c[k] for k in ("hello", "placeholder", "listening", "thinking", "fallback", "voice_on", "voice_off", "speech")}
+    i18n["wa_ma"] = WA_MA; i18n["wa_fr"] = WA_FR; i18n["endpoint"] = CONTACT_URL; i18n["lang"] = lang
+    chips = "".join(f'<button type="button" class="chip-q">{e(x)}</button>' for x in c["chips"])
+    return f'''<div class="fab">
+<div class="wa-menu" id="wa-menu" hidden>
+<a href="{wa_link(WA_MA, LANGS[lang]["wa_text"])}" target="_blank" rel="noopener">{e(c["wa_ma"])}<small>+212 6 63 28 51 19</small></a>
+<a href="{wa_link(WA_FR, LANGS[lang]["wa_text"])}" target="_blank" rel="noopener">{e(c["wa_fr"])}<small>+33 7 80 80 31 30</small></a>
+</div>
+<button type="button" class="fab-btn fab-wa" aria-controls="wa-menu" aria-expanded="false" aria-label="{e(c["wa"])}">{WA_ICON}</button>
+<button type="button" class="fab-btn fab-bot" aria-controls="chat" aria-expanded="false" aria-label="{e(c["open"])}">{BOT_ICON}</button>
+</div>
+<section class="chat" id="chat" hidden role="dialog" aria-label="{e(c["name"])} – {e(c["role"])}">
+<header class="chat-h"><span class="avatar" aria-hidden="true">{e(c["name"][0])}</span><div><strong>{e(c["name"])}</strong><small>{e(c["role"])}</small></div>
+<button type="button" class="chat-ic" id="chat-voice" aria-pressed="true" aria-label="{e(c["voice_off"])}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path class="wave" d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg></button>
+<button type="button" class="chat-ic" id="chat-close" aria-label="{e(c["close"])}">×</button></header>
+<div class="chat-log" id="chat-log" aria-live="polite"></div>
+<div class="chat-chips" id="chat-chips">{chips}</div>
+<form class="chat-form" id="chat-form">
+<button type="button" class="chat-ic mic" id="chat-mic" aria-label="{e(c["mic"])}" hidden><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+<input type="text" id="chat-input" autocomplete="off" maxlength="600" aria-label="{e(c["placeholder"])}" placeholder="{e(c["placeholder"])}">
+<button type="submit" class="chat-send" aria-label="{e(c["send"])}">{ARROW}</button>
+</form>
+<p class="chat-note">{e(c["note"])}</p>
+</section>
+<script type="application/json" id="chat-i18n">{json.dumps(i18n, ensure_ascii=False)}</script>'''
+
+
+def p_contact(lang):
+    t = LANGS[lang]
+    c = t["contact"]
+    ops = "".join(f'<option value="{v}">{e(l)}</option>' for v, l in c["sujets"])
+    body = page_head(c["k"], c["title"], c["lead"]) + f'''<section class="band"><div class="wrap">
+<div class="grid">
+<article class="card"><span class="ico" style="color:#1FAF5A">{WA_ICON}</span><h2 style="font-size:22px">{e(c["wa_ma_t"])}</h2><p>{e(c["wa_d"])}</p><p class="price" style="font-weight:700;color:#0E1B2C">+212 6 63 28 51 19</p><a class="btn btn-navy" href="{wa_link(WA_MA, t["wa_text"])}" target="_blank" rel="noopener">{e(c["wa_btn"])}</a></article>
+<article class="card"><span class="ico" style="color:#1FAF5A">{WA_ICON}</span><h2 style="font-size:22px">{e(c["wa_fr_t"])}</h2><p>{e(c["wa_d"])}</p><p class="price" style="font-weight:700;color:#0E1B2C">+33 7 80 80 31 30</p><a class="btn btn-navy" href="{wa_link(WA_FR, t["wa_text"])}" target="_blank" rel="noopener">{e(c["wa_btn"])}</a></article>
+<article class="card">{icon("mail")}<h2 style="font-size:22px">{e(c["mail_t"])}</h2><p>{e(c["mail_d"])}</p><p style="font-weight:700;color:#0E1B2C">contact@llcfacile.com</p><a class="btn btn-line" href="mailto:contact@llcfacile.com">{e(c["mail_btn"])}</a></article>
+<article class="card" style="border:2px solid #E8A33D"><span class="ico">{BOT_ICON}</span><h2 style="font-size:22px">{e(c["bot_t"])}</h2><p>{e(c["bot_d"])}</p><button type="button" class="btn btn-gold open-chat" style="margin-top:auto">{e(c["bot_btn"])}</button></article>
+</div>
+<div class="light" style="max-width:820px;margin:48px auto 0">
+<form class="form" id="contact-form" novalidate data-endpoint="{CONTACT_URL}" data-lang="{lang}">
+<fieldset><legend>{e(c["form_t"])}</legend><p class="hint">{e(c["form_lead"])}</p>
+<div class="hp" aria-hidden="true"><label>Site <input type="text" name="site_url" tabindex="-1" autocomplete="off"></label></div>
+<div class="fields">
+<div class="f"><label for="c-nom">{e(c["nom"])} <span class="req" aria-hidden="true">*</span></label><input id="c-nom" name="nom" type="text" required autocomplete="name"></div>
+<div class="f"><label for="c-email">{e(c["email"])} <span class="req" aria-hidden="true">*</span></label><input id="c-email" name="email" type="email" required autocomplete="email"></div>
+<div class="f"><label for="c-tel">{e(c["tel"])}</label><input id="c-tel" name="telephone" type="tel" autocomplete="tel" dir="ltr"></div>
+<div class="f"><label for="c-sujet">{e(c["sujet"])}</label><select id="c-sujet" name="sujet">{ops}</select></div>
+<div class="f" style="grid-column:1/-1"><label for="c-msg">{e(c["message"])} <span class="req" aria-hidden="true">*</span></label><textarea id="c-msg" name="message" required></textarea></div>
+</div>
+<div class="alert err" id="contact-err" role="alert" hidden>{e(c["err"])}</div>
+<button class="btn btn-gold" type="submit" style="align-self:flex-start">{e(c["send"])} {ARROW}</button>
+</fieldset>
+</form>
+<div class="done" id="contact-ok" hidden tabindex="-1"><h2 style="font-size:26px">{e(c["ok"])}</h2></div>
+<p class="note" style="text-align:center;margin:24px auto 0">{e(c["company"])}</p>
+</div>
+</div></section>'''
+    return body, ""
+
+
+PAGES = {"home": p_home, "benefits": p_benefits, "how": p_how, "pricing": p_pricing, "faq": p_faq, "order": p_order, "contact": p_contact}
 
 
 def out_path(lang, key):

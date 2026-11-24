@@ -16,5 +16,10 @@ Déployé par Vercel à chaque push sur `main`. Pour toute modification, suivre 
 - Envoie vers la fonction Supabase `llcfacile-commande` (projet `gbdjiczesmhhsrqhvrgj`, schéma `llcfacile`, table `commandes`, bucket privé `llcfacile-documents`). Ne jamais toucher au schéma `public` ni à `sovereignlife`.
 - Paiement : la fonction renvoie un lien Stripe Payment Link lu dans ses secrets `STRIPE_LINK_BASIC`, `STRIPE_LINK_ULTIMATE`, `STRIPE_LINK_ULTIMATE_LAUNCH` (et variantes `_ITIN`). Sans secret, le client est invité à attendre le lien sur WhatsApp.
 
+## Contact et assistante
+- Page Contact (3 langues) + boutons flottants WhatsApp et « Léa » sur toutes les pages (`chat_widget` dans `tools/build.py`, logique dans `assets/site.js`).
+- Fonction Supabase `llcfacile-contact` : `type: "message"` -> table `llcfacile.messages` ; `type: "chat"` -> Claude (secret `ANTHROPIC_API_KEY`, modèle `LLCFACILE_MODEL` ou claude-haiku-5-5), journal dans `llcfacile.chat`. Le texte de connaissance de Léa (prix, règles) est dans la constante `SYSTEM` : à mettre à jour avec les prix.
+- Voix : synthèse vocale du navigateur, voix féminine choisie automatiquement ; dictée par micro si le navigateur le permet.
+
 ## Règles
 - Ne jamais promettre : 0 impôt / optimisation fiscale, Shopify Payments inclus, ouverture de compte ou ITIN garantis.

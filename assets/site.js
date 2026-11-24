@@ -122,3 +122,139 @@
 
   setCur(cur);
 }
+
+/* WhatsApp flottant, formulaire de contact, assistante Léa (texte + voix) */
+{
+  const $ = (s, r = document) => r.querySelector(s);
+  const cfg = (() => { try { return JSON.parse($('#chat-i18n').textContent); } catch (e) { return null; } })();
+  if (cfg) {
+    const waBtn = $('.fab-wa'), waMenu = $('#wa-menu');
+    waBtn.addEventListener('click', () => {
+      const open = waMenu.hidden; waMenu.hidden = !open; waBtn.setAttribute('aria-expanded', String(open));
+    });
+
+    // Formulaire « Nous contacter »
+    const cf = $('#contact-form');
+    if (cf) cf.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const err = $('#contact-err'); err.hidden = true;
+      const data = Object.fromEntries(new FormData(cf));
+      if (!data.nom.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim()) || !data.message.trim()) { err.hidden = false; err.focus(); return; }
+      const btn = $('button[type=submit]', cf); btn.disabled = true;
+      try {
+        const r = await fetch(cf.dataset.endpoint, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'message', lang: cf.dataset.lang, ...data }) });
+        const d = await r.json().catch(() => ({}));
+        if (!r.ok || !d.ok) throw new Error();
+        cf.hidden = true; const ok = $('#contact-ok'); ok.hidden = false; ok.focus();
+      } catch (e) { err.hidden = false; } finally { btn.disabled = false; }
+    });
+
+    // Assistante
+    const chat = $('#chat'), log = $('#chat-log'), form = $('#chat-form'), input = $('#chat-input');
+    const botBtn = $('.fab-bot'), voiceBtn = $('#chat-voice'), mic = $('#chat-mic'), chips = $('#chat-chips');
+    const history = [];
+    let session = '';
+    try { session = sessionStorage.getItem('llcf-chat') || ''; } catch (e) { /* rien */ }
+    if (!session) { session = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2)); try { sessionStorage.setItem('llcf-chat', session); } catch (e) { /* rien */ } }
+    let voiceOn = true;
+    try { voiceOn = localStorage.getItem('llcf-voice') !== 'off'; } catch (e) { /* rien */ }
+
+    const linkify = (t) => {
+      const div = document.createElement('div'); div.textContent = t;
+      div.innerHTML = div.innerHTML
+        .replace(/\b(llcfacile\.com(\/[a-z\-\/]*)?)/gi, (m) => `<a href="https://${m}">${m}</a>`)
+        .replace(/(\+212 ?6 ?63 ?28 ?51 ?19)/g, `<a href="https://wa.me/${cfg.wa_ma}" target="_blank" rel="noopener">$1</a>`)
+        .replace(/(\+33 ?7 ?80 ?80 ?31 ?30)/g, `<a href="https://wa.me/${cfg.wa_fr}" target="_blank" rel="noopener">$1</a>`);
+      return div.innerHTML;
+    };
+    const add = (who, text, cls = '') => {
+      const m = document.createElement('div'); m.className = `msg ${who} ${cls}`.trim();
+      if (who === 'bot') m.innerHTML = linkify(text); else m.textContent = text;
+      log.appendChild(m); log.scrollTop = log.scrollHeight; return m;
+    };
+
+    // Voix féminine
+    const synth = window.speechSynthesis;
+    const FEM = /(am[eé]lie|audrey|aur[eé]lie|marie|julie|denise|hortense|virginie|c[eé]line|l[eé]a|charlotte|google fran[cç]ais|female|femme|samantha|karen|serena|sonia|libby|zira|aria|jenny|hoda|salma|laila|mariam|zariyah|fatima|amira)/i;
+    const MALE = /(thomas|paul|henri|nicolas|daniel|claude|mathieu|male|homme|guy|ryan|george|naayf|hamed|tarik|jamal)/i;
+    let voice = null;
+    const pickVoice = () => {
+      if (!synth) return;
+      const want = cfg.speech.toLowerCase(), base = want.slice(0, 2);
+      const vs = synth.getVoices().filter(v => v.lang && v.lang.toLowerCase().startsWith(base));
+      voice = vs.find(v => v.lang.toLowerCase() === want && FEM.test(v.name))
+        || vs.find(v => FEM.test(v.name)) || vs.find(v => !MALE.test(v.name)) || vs[0] || null;
+    };
+    if (synth) { pickVoice(); synth.onvoiceschanged = pickVoice; }
+    const speak = (text) => {
+      if (!synth || !voiceOn) return;
+      synth.cancel();
+      const u = new SpeechSynthesisUtterance(text.replace(/https?:\/\/\S+/g, ''));
+      u.lang = voice ? voice.lang : cfg.speech; if (voice) u.voice = voice;
+      u.rate = 1; u.pitch = 1.1;
+      synth.speak(u);
+    };
+    const setVoice = (on) => {
+      voiceOn = on; voiceBtn.setAttribute('aria-pressed', String(on));
+      voiceBtn.setAttribute('aria-label', on ? cfg.voice_off : cfg.voice_on);
+      try { localStorage.setItem('llcf-voice', on ? 'on' : 'off'); } catch (e) { /* rien */ }
+      if (!on && synth) synth.cancel();
+    };
+    if (!synth) voiceBtn.hidden = true; else setVoice(voiceOn);
+    voiceBtn.addEventListener('click', () => setVoice(!voiceOn));
+
+    const openChat = () => {
+      chat.hidden = false; botBtn.setAttribute('aria-expanded', 'true');
+      if (!log.children.length) { add('bot', cfg.hello); history.push({ role: 'assistant', content: cfg.hello }); }
+      input.focus();
+    };
+    const closeChat = () => { chat.hidden = true; botBtn.setAttribute('aria-expanded', 'false'); if (synth) synth.cancel(); botBtn.focus(); };
+    botBtn.addEventListener('click', () => (chat.hidden ? openChat() : closeChat()));
+    $('#chat-close').addEventListener('click', closeChat);
+    document.querySelectorAll('.open-chat').forEach(b => b.addEventListener('click', openChat));
+    chat.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeChat(); });
+
+    let busy = false;
+    const ask = async (q) => {
+      q = q.trim(); if (!q || busy) return;
+      busy = true; chips.hidden = true; input.value = '';
+      add('me', q); history.push({ role: 'user', content: q });
+      const wait = add('bot', cfg.thinking, 'wait');
+      let reply = cfg.fallback;
+      try {
+        const r = await fetch(cfg.endpoint, { method: 'POST', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ type: 'chat', lang: cfg.lang, session, messages: history.slice(-12) }) });
+        const d = await r.json().catch(() => ({}));
+        if (r.ok && d.ok && d.reply) reply = d.reply;
+      } catch (e) { /* message de repli */ }
+      wait.remove();
+      add('bot', reply); history.push({ role: 'assistant', content: reply });
+      speak(reply);
+      busy = false; input.focus();
+    };
+    form.addEventListener('submit', (e) => { e.preventDefault(); ask(input.value); });
+    chips.querySelectorAll('.chip-q').forEach(b => b.addEventListener('click', () => ask(b.textContent)));
+
+    // Micro (dictée vocale) si le navigateur le permet
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SR) {
+      mic.hidden = false;
+      let rec = null;
+      mic.addEventListener('click', () => {
+        if (rec) { rec.stop(); return; }
+        if (synth) synth.cancel();
+        rec = new SR(); rec.lang = cfg.speech; rec.interimResults = true; rec.maxAlternatives = 1;
+        mic.classList.add('on'); input.placeholder = cfg.listening;
+        let final = '';
+        rec.onresult = (ev) => {
+          let txt = '';
+          for (const r of ev.results) { txt += r[0].transcript; if (r.isFinal) final = txt; }
+          input.value = txt;
+        };
+        rec.onend = () => { mic.classList.remove('on'); input.placeholder = cfg.placeholder; rec = null; if (final) ask(final); };
+        rec.onerror = () => { mic.classList.remove('on'); input.placeholder = cfg.placeholder; rec = null; };
+        rec.start();
+      });
+    }
+  }
+}
