@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css?v=5">
+<link rel="stylesheet" href="/assets/site.css?v=6">
 <meta name="robots" content="index, follow">
 </head>
 <body>
@@ -52,12 +52,12 @@
 <div class="hp" aria-hidden="true"><label>Site <input type="text" name="site_url" tabindex="-1" autocomplete="off"></label></div>
 
 <fieldset><legend>1. العرض ديالك</legend>
-<div class="toolbar" style="margin:0;align-items:center"><span class="hint">خلص ب:</span><div class="cur" role="group" aria-label="العملة"><button type="button" data-cur="EUR" aria-pressed="false">EUR €</button><button type="button" data-cur="MAD" aria-pressed="true">MAD</button></div></div>
-<div class="choices"><label class="choice"><input type="radio" name="formule" value="basic" data-eur="299" data-mad="3290" required>
-<span><b>Basic</b><span class="price" data-eur="299 €" data-mad="3 290 MAD">3 290 MAD</span><em>مزيان باش تبدا بطريقة ساهلة ومضمونة.</em></span></label><label class="choice"><input type="radio" name="formule" value="ultimate" data-eur="499" data-mad="5390" checked required>
-<span><b>Ultimate</b><span class="price" data-eur="499 €" data-mad="5 390 MAD">5 390 MAD</span><em>الحل الكامل باش تكبّر الخدمة ديالك.</em></span></label><label class="choice"><input type="radio" name="formule" value="ultimate_launch" data-eur="699" data-mad="7590" required>
-<span><b>Ultimate Launch</b><span class="price" data-eur="699 €" data-mad="7 590 MAD">7 590 MAD</span><em>طلق الستور ديالك أونلاين وبدا تبيع.</em></span></label></div>
-<label class="check"><input type="checkbox" name="option_itin" value="1"><span>اختيار: المساعدة فطلب ITIN، <span class="price" data-eur="+ 249 €" data-mad="+ 2 690 MAD">+ 2 690 MAD</span><br><span class="hint">مفيد ل Shopify Payments. القبول من عند IRS ماشي مضمون.</span></span></label>
+<div class="toolbar" style="margin:0;align-items:center"><span class="hint">خلص ب:</span><div class="cur" role="group" aria-label="العملة"><button type="button" data-cur="EUR" aria-pressed="false">EUR €</button><button type="button" data-cur="MAD" aria-pressed="true">MAD</button><button type="button" data-cur="CHF" aria-pressed="false">CHF</button></div></div>
+<div class="choices"><label class="choice"><input type="radio" name="formule" value="basic" data-eur="299" data-mad="3290" data-chf="289" data-itin='{"EUR":249,"MAD":2690,"CHF":239}' required>
+<span><b>Basic</b><span class="price" data-eur="299 €" data-mad="3 290 MAD" data-chf="289 CHF">3 290 MAD</span><em>مزيان باش تبدا بطريقة ساهلة ومضمونة.</em></span></label><label class="choice"><input type="radio" name="formule" value="ultimate" data-eur="499" data-mad="5390" data-chf="479" data-itin='{"EUR":249,"MAD":2690,"CHF":239}' checked required>
+<span><b>Ultimate</b><span class="price" data-eur="499 €" data-mad="5 390 MAD" data-chf="479 CHF">5 390 MAD</span><em>الحل الكامل باش تكبّر الخدمة ديالك.</em></span></label><label class="choice"><input type="radio" name="formule" value="ultimate_launch" data-eur="699" data-mad="7590" data-chf="669" data-itin='{"EUR":249,"MAD":2690,"CHF":239}' required>
+<span><b>Ultimate Launch</b><span class="price" data-eur="699 €" data-mad="7 590 MAD" data-chf="669 CHF">7 590 MAD</span><em>طلق الستور ديالك أونلاين وبدا تبيع.</em></span></label></div>
+<label class="check"><input type="checkbox" name="option_itin" value="1"><span>اختيار: المساعدة فطلب ITIN، <span class="price" data-eur="+ 249 €" data-mad="+ 2 690 MAD" data-chf="+ 239 CHF">+ 2 690 MAD</span><br><span class="hint">مفيد ل Shopify Payments. القبول من عند IRS ماشي مضمون.</span></span></label>
 </fieldset>
 
 <fieldset><legend>2. المعلومات ديالك</legend>
@@ -163,6 +163,6 @@
 <p class="chat-note">مساعدة بالذكاء الاصطناعي: أجوبة للتوجيه فقط، بلا استشارة ضريبية ولا قانونية.</p>
 </section>
 <script type="application/json" id="chat-i18n">{"hello": "السلام، أنا ليا، المساعدة ديال LLC Facile. سولني على أي حاجة فتأسيس LLC ديالك فأمريكا.", "placeholder": "كتب السؤال ديالك…", "listening": "كنسمع ليك…", "thinking": "ليا كتكتب…", "fallback": "ما نقدرش نجاوب دابا. كتب لينا فالواتساب، كنجاوبوك دغيا.", "voice_on": "شعل الصوت", "voice_off": "طفي الصوت", "speech": "ar-MA", "wa_ma": "212663285119", "wa_fr": "33780803130", "endpoint": "https://gbdjiczesmhhsrqhvrgj.supabase.co/functions/v1/llcfacile-contact", "lang": "ar"}</script>
-<script src="/assets/site.js?v=4" defer></script>
+<script src="/assets/site.js?v=6" defer></script>
 </body>
 </html>

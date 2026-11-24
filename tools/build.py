@@ -27,9 +27,10 @@ WA_MA = "212663285119"
 WA_FR = "33780803130"
 CONTACT_URL = "https://gbdjiczesmhhsrqhvrgj.supabase.co/functions/v1/llcfacile-contact"
 FUNCTION_URL = "https://gbdjiczesmhhsrqhvrgj.supabase.co/functions/v1/llcfacile-commande"
-PRICES = {"basic": (299, 3290), "ultimate": (499, 5390), "ultimate_launch": (699, 7590)}
-ITIN = (249, 2690)
-RENEW = (290, 3150)
+# (EUR, MAD, CHF) — MAD et CHF : conversions arrondies, indicatives
+PRICES = {"basic": (299, 3290, 289), "ultimate": (499, 5390, 479), "ultimate_launch": (699, 7590, 669)}
+ITIN = (249, 2690, 239)
+RENEW = (290, 3150, 279)
 
 e = html.escape
 
@@ -46,12 +47,13 @@ def href(lang, key):
     return p if p == "/" else p.rstrip("/")
 
 
-def money(eur, mad, lang, plus=False, per=""):
+def money(eur, mad, chf, lang, plus=False, per=""):
     s = "+ " if plus else ""
     de = f"{s}{eur} €{per}"
     dm = f"{s}{mad:,} MAD{per}".replace(",", " ")
+    dc = f"{s}{chf} CHF{per}"
     first = dm if lang == "ar" else de
-    return f'<span class="price" data-eur="{e(de)}" data-mad="{e(dm)}">{e(first)}</span>'
+    return f'<span class="price" data-eur="{e(de)}" data-mad="{e(dm)}" data-chf="{e(dc)}">{e(first)}</span>'
 
 
 def wa_link(num, text):
@@ -118,7 +120,7 @@ def layout(lang, key, title, desc, body, extra_head=""):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?{fonts}&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css?v=5">
+<link rel="stylesheet" href="/assets/site.css?v=6">
 {extra_head}
 </head>
 <body>
@@ -152,7 +154,7 @@ def layout(lang, key, title, desc, body, extra_head=""):
 </div>
 </footer>
 {chat_widget(lang)}
-<script src="/assets/site.js?v=4" defer></script>
+<script src="/assets/site.js?v=6" defer></script>
 </body>
 </html>
 '''
@@ -203,11 +205,11 @@ def plans(lang, dark=True):
         hi = k == "ultimate"
         feats = "".join(f'<li>{CHECK.format(c="#D4A63A" if not hi else "#8A6514")}<span>{e(f)}</span></li>' for f in pl["features"])
         badge = f'<span class="badge">{e(p["popular"])}</span>' if hi else ""
-        eur, mad = PRICES[k]
+        eur, mad, chf = PRICES[k]
         out += f'''<article class="plan{" hi" if hi else ""}">
 <div class="top-l"><h3 style="font-size:24px">{e(pl["name"])}</h3>{badge}</div>
 <p class="d">{e(pl["desc"])}</p>
-<div class="amount">{money(eur, mad, lang)}<span class="d">{e(p["once"])}</span></div>
+<div class="amount">{money(eur, mad, chf, lang)}<span class="d">{e(p["once"])}</span></div>
 <ul class="feat">{feats}</ul>
 <a class="btn" href="{href(lang, "order")}?formule={k}">{e(p["choose"])} {e(pl["name"])}</a>
 </article>'''
@@ -223,7 +225,7 @@ def cur_toggle(lang, light=False):
     t = LANGS[lang]
     first = "MAD" if lang == "ar" else "EUR"
     b = lambda c, lbl: f'<button type="button" data-cur="{c}" aria-pressed="{"true" if c == first else "false"}">{lbl}</button>'
-    return f'<div class="cur{" " if not light else ""}" role="group" aria-label="{e(t["currency"])}">{b("EUR", "EUR €")}{b("MAD", "MAD")}</div>'
+    return f'<div class="cur{" " if not light else ""}" role="group" aria-label="{e(t["currency"])}">{b("EUR", "EUR €")}{b("MAD", "MAD")}{b("CHF", "CHF")}</div>'
 
 
 def faq_list(lang, items):
@@ -345,9 +347,9 @@ def p_order(lang):
 
     choices = ""
     for k in ("basic", "ultimate", "ultimate_launch"):
-        eur, mad = PRICES[k]
-        choices += f'''<label class="choice"><input type="radio" name="formule" value="{k}" data-eur="{eur}" data-mad="{mad}"{" checked" if k == "ultimate" else ""} required>
-<span><b>{e(p["plans"][k]["name"])}</b>{money(eur, mad, lang)}<em>{e(p["plans"][k]["desc"])}</em></span></label>'''
+        eur, mad, chf = PRICES[k]
+        choices += f'''<label class="choice"><input type="radio" name="formule" value="{k}" data-eur="{eur}" data-mad="{mad}" data-chf="{chf}" data-itin='{{"EUR":{ITIN[0]},"MAD":{ITIN[1]},"CHF":{ITIN[2]}}}'{" checked" if k == "ultimate" else ""} required>
+<span><b>{e(p["plans"][k]["name"])}</b>{money(eur, mad, chf, lang)}<em>{e(p["plans"][k]["desc"])}</em></span></label>'''
 
     body = page_head(o["k"], o["title"], o["lead"]) + f'''<section class="band light"><div class="wrap" style="max-width:920px">
 <form class="form" id="order" novalidate data-endpoint="{FUNCTION_URL}" data-lang="{lang}">

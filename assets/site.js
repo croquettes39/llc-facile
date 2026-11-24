@@ -11,14 +11,16 @@
     burger.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
 
-  // Devise (EUR / MAD), mémorisée pour le visiteur
+  // Devise (EUR / MAD / CHF), mémorisée pour le visiteur
+  // Darija : toujours en dirhams à l'arrivée. Le choix du visiteur est retenu par langue.
+  const CUR_KEY = 'llcf-cur-' + lang;
   let cur = lang === 'ar' ? 'MAD' : 'EUR';
-  try { cur = localStorage.getItem('llcf-cur') || cur; } catch (e) { /* stockage indisponible */ }
+  try { const sv = localStorage.getItem(CUR_KEY); if (['EUR', 'MAD', 'CHF'].includes(sv)) cur = sv; } catch (e) { /* stockage indisponible */ }
   const setCur = (c) => {
     cur = c;
-    try { localStorage.setItem('llcf-cur', c); } catch (e) { /* rien */ }
+    try { localStorage.setItem(CUR_KEY, c); } catch (e) { /* rien */ }
     $$('.cur button').forEach(b => b.setAttribute('aria-pressed', b.dataset.cur === c ? 'true' : 'false'));
-    $$('.price[data-eur]').forEach(p => { p.textContent = c === 'MAD' ? p.dataset.mad : p.dataset.eur; });
+    $$('.price[data-eur]').forEach(p => { p.textContent = p.dataset[c.toLowerCase()] || p.dataset.eur; });
     const dv = $('#order [name=devise]'); if (dv) dv.value = c;
     updateTotal();
   };
@@ -32,10 +34,12 @@
     const f = $('[name=formule]:checked', form);
     if (!f) return;
     const itin = $('[name=option_itin]', form).checked;
-    const base = Number(cur === 'MAD' ? f.dataset.mad : f.dataset.eur);
-    const add = itin ? (cur === 'MAD' ? 2690 : 249) : 0;
+    const base = Number(f.dataset[cur.toLowerCase()] || f.dataset.eur);
+    let itinP = { EUR: 249, MAD: 2690, CHF: 239 };
+    try { itinP = JSON.parse(f.dataset.itin) || itinP; } catch (e) { /* défaut */ }
+    const add = itin ? (itinP[cur] || 0) : 0;
     const n = (base + add).toLocaleString('fr-FR').replace(/ | /g, ' ');
-    $('#total').textContent = cur === 'MAD' ? n + ' MAD' : n + ' €';
+    $('#total').textContent = cur === 'EUR' ? n + ' €' : n + ' ' + cur;
   }
 
   if (form) {

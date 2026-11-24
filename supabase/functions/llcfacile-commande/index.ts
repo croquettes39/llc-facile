@@ -4,8 +4,9 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import postgres from "npm:postgres@3.4.5";
 
 const ORIGINS = ["https://llcfacile.com", "https://www.llcfacile.com", "https://llc-facile.vercel.app"];
-const PRIX = { basic: [299, 3290], ultimate: [499, 5390], ultimate_launch: [699, 7590] } as const;
-const ITIN = [249, 2690];
+// [EUR, MAD, CHF] — MAD et CHF : montants indicatifs (le paiement Stripe se fait en euros)
+const PRIX = { basic: [299, 3290, 289], ultimate: [499, 5390, 479], ultimate_launch: [699, 7590, 669] } as const;
+const ITIN = [249, 2690, 239];
 // Liens de paiement Stripe (Payment Links). Un secret STRIPE_LINK_<FORMULE>[_ITIN] peut les remplacer.
 // L'option ITIN se paie avec un second lien, à part.
 const LINKS: Record<string, string> = {
@@ -43,9 +44,10 @@ Deno.serve(async (req) => {
 
   const formule = txt(f.get("formule")) as keyof typeof PRIX;
   if (!(formule in PRIX)) return json({ error: "formule" }, 400);
-  const devise = txt(f.get("devise")) === "MAD" ? "MAD" : "EUR";
+  const dv = txt(f.get("devise"));
+  const devise = dv === "MAD" || dv === "CHF" ? dv : "EUR";
   const itin = txt(f.get("option_itin")) === "1";
-  const i = devise === "EUR" ? 0 : 1;
+  const i = devise === "MAD" ? 1 : devise === "CHF" ? 2 : 0;
   const montant = PRIX[formule][i] + (itin ? ITIN[i] : 0);
 
   const requis = ["prenom", "nom", "email", "telephone", "pays_residence", "adresse", "ville", "nom_societe_1", "activite"];

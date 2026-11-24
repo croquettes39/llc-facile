@@ -6,7 +6,7 @@ Déployé par Vercel à chaque push sur `main`. Pour toute modification, suivre 
 ## Pages générées (3 langues)
 - Les pages Accueil, Avantages, Comment ça marche, Tarifs, FAQ et Commander existent en français (racine), darija (`/ar/`, RTL) et anglais (`/en/`).
 - **Ne pas les modifier à la main** : changer le texte dans `tools/content_fr.py`, `tools/content_ar.py`, `tools/content_en.py` (toujours les trois), la structure dans `tools/build.py`, puis lancer `python3 tools/build.py` (régénère aussi `sitemap.xml`).
-- Prix : constantes `PRICES`, `ITIN`, `RENEW` dans `tools/build.py` ET dans `supabase/functions/llcfacile-commande/index.ts` (le serveur recalcule le montant).
+- Prix (EUR, MAD, CHF — MAD et CHF = conversions arrondies, indicatives ; Stripe encaisse en euros) : constantes `PRICES`, `ITIN`, `RENEW` dans `tools/build.py` ET dans `supabase/functions/llcfacile-commande/index.ts` (le serveur recalcule le montant).
 - Styles et scripts partagés : `assets/site.css`, `assets/site.js`. Après un changement, monter `?v=N` dans `tools/build.py`.
 
 ## Pages écrites à la main (français uniquement)
