@@ -322,11 +322,21 @@
     return (PAGES[rest] || rest) + (l === 'fr' ? '' : ' · ' + LANGS[l]);
   };
   const CODES = {"Maroc": "MA", "France": "FR", "Belgique": "BE", "Suisse": "CH", "Luxembourg": "LU", "Monaco": "MC", "Canada": "CA", "Algérie": "DZ", "Tunisie": "TN", "Sénégal": "SN", "Côte d'Ivoire": "CI", "Cameroun": "CM", "Royaume-Uni": "GB", "Espagne": "ES", "Allemagne": "DE", "Italie": "IT", "Pays-Bas": "NL", "Portugal": "PT", "Émirats arabes unis": "AE", "Arabie saoudite": "SA", "Qatar": "QA", "Turquie": "TR", "États-Unis": "US", "Irlande": "IE", "Autriche": "AT", "Suède": "SE", "Norvège": "NO", "Danemark": "DK", "Finlande": "FI", "Pologne": "PL", "Roumanie": "RO", "Grèce": "GR", "Égypte": "EG", "Mauritanie": "MR", "Mali": "ML", "Gabon": "GA", "RD Congo": "CD", "Congo": "CG", "Bénin": "BJ", "Burkina Faso": "BF", "Togo": "TG", "Madagascar": "MG", "Maurice": "MU", "Guinée": "GN", "Niger": "NE", "Tchad": "TD", "La Réunion": "RE", "Guadeloupe": "GP", "Martinique": "MQ", "Brésil": "BR", "Mexique": "MX", "Inde": "IN", "Chine": "CN", "Japon": "JP", "Singapour": "SG", "Hong Kong": "HK", "Koweït": "KW", "Bahreïn": "BH", "Oman": "OM", "Jordanie": "JO", "Liban": "LB", "Israël": "IL", "Russie": "RU", "Ukraine": "UA", "Australie": "AU", "Hongrie": "HU", "Tchéquie": "CZ"};
-  const drapeau = (nom) => {
-    const c = CODES[nom] || (/^[A-Z]{2}$/.test(nom || '') ? nom : '');
-    return c ? String.fromCodePoint(...[...c].map(x => 0x1F1E6 + x.charCodeAt(0) - 65)) : '🌐';
+  // Drapeaux en image (Windows n'affiche pas les drapeaux emoji)
+  const codePays = (nom) => CODES[nom] || (/^[A-Z]{2}$/.test(nom || '') ? nom : '');
+  let NOMS_INTL = null;
+  try { NOMS_INTL = new Intl.DisplayNames(['fr'], { type: 'region' }); } catch (e) { /* ancien navigateur */ }
+  const paysTexte = (n) => {
+    if (!n || /^(UTC|Etc|GMT)/i.test(n)) return 'Inconnu';
+    if (/^[A-Z]{2}$/.test(n) && NOMS_INTL) { try { return NOMS_INTL.of(n) || n; } catch (e) { return n; } }
+    return n;
   };
-  const paysNom = (n) => drapeau(n) + ' ' + (n || 'Inconnu');
+  const drapeauHTML = (n) => {
+    const c = codePays(n);
+    return c ? `<img class="flag" src="/admin/flags/${c.toLowerCase()}.svg" alt="" width="22" height="16" loading="lazy">`
+      : '<span class="flag flag-x" aria-hidden="true">🌐</span>';
+  };
+  const paysHTML = (n) => drapeauHTML(n) + esc(paysTexte(n));
   const depuis = (d) => { const s = Math.max(0, Math.round((Date.now() - new Date(d)) / 1000)); return s < 60 ? s + ' s' : Math.round(s / 60) + ' min'; };
   const evol = (a, b) => {
     if (!b) return a ? '<span class="ev up">nouveau</span>' : '';
@@ -339,7 +349,7 @@
     $('#st-live-n').textContent = rows.length;
     $('#st-live-maj').textContent = 'mis à jour à ' + new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     $('#st-live').innerHTML = rows.length ? `<div class="table-wrap"><table class="admin-table live-t"><thead><tr><th>Page en cours</th><th>Pays</th><th>Langue</th><th>Appareil</th><th>Venu de</th><th>Sur le site depuis</th></tr></thead><tbody>${
-      rows.map(r => `<tr><td><b>${esc(pageNom(r.page))}</b></td><td>${esc(paysNom(r.pays))}</td><td>${esc(LANGS[r.langue] || r.langue || '')}</td><td>${esc(r.appareil || '')}</td><td>${esc(r.source || '')}</td><td>${depuis(r.debut)}</td></tr>`).join('')
+      rows.map(r => `<tr><td><b>${esc(pageNom(r.page))}</b></td><td>${paysHTML(r.pays)}</td><td>${esc(LANGS[r.langue] || r.langue || '')}</td><td>${esc(r.appareil || '')}</td><td>${esc(r.source || '')}</td><td>${depuis(r.debut)}</td></tr>`).join('')
     }</tbody></table></div>` : '<p class="empty" style="padding:12px 0">Personne en ce moment.</p>';
   }
 
@@ -372,9 +382,9 @@
     });
   }
 
-  function topList(titre, rows, fmt = (k) => k) {
+  function topList(titre, rows, fmt = (k) => k, html = null) {
     const max = Math.max(1, ...rows.map(r => r.visiteurs));
-    return `<div class="panel"><h2>${esc(titre)}</h2>${rows.length ? `<ul class="toplist">${rows.map(r => `<li><span class="tk">${esc(fmt(r.k) || '—')}</span><span class="tv">${nf(r.visiteurs)}</span><span class="tb"><i style="width:${Math.round(r.visiteurs / max * 100)}%"></i></span></li>`).join('')}</ul>` : '<p class="hint">Pas encore de données.</p>'}</div>`;
+    return `<div class="panel"><h2>${esc(titre)}</h2>${rows.length ? `<ul class="toplist">${rows.map(r => `<li><span class="tk">${html ? html(r.k) : esc(fmt(r.k) || '—')}</span><span class="tv">${nf(r.visiteurs)}</span><span class="tb"><i style="width:${Math.round(r.visiteurs / max * 100)}%"></i></span></li>`).join('')}</ul>` : '<p class="hint">Pas encore de données.</p>'}</div>`;
   }
 
   async function loadStats() {
@@ -399,7 +409,7 @@
       tile('Messages / questions à Léa', nf(c.messages) + ' / ' + nf(c.questions_lea));
     $('#st-tops').innerHTML =
       topList('Pages les plus vues', d.pages, pageNom) + topList('D’où viennent-ils ?', d.sources) +
-      topList('Pays', d.pays, paysNom) + topList('Langue du site', d.langues, k => LANGS[k] || k) +
+      topList('Pays', d.pays, null, paysHTML) + topList('Langue du site', d.langues, k => LANGS[k] || k) +
       topList('Appareils', d.appareils) + topList('Navigateurs', d.navigateurs);
   }
   $$('#st-periode button').forEach(b => b.addEventListener('click', () => {
