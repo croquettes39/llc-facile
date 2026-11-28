@@ -31,6 +31,8 @@ FUNCTION_URL = "https://gbdjiczesmhhsrqhvrgj.supabase.co/functions/v1/llcfacile-
 PRICES = {"basic": (299, 3290, 289), "ultimate": (499, 5390, 479), "ultimate_launch": (699, 7590, 669)}
 ITIN = (249, 2690, 239)
 RENEW = (290, 3150, 279)
+# Options comptables (comptable partenaire, sur demande)
+COMPTA = {"compta": (690, 7490, 659), "assoc": (990, 10750, 949), "rdv": (120, 1300, 115)}
 
 e = html.escape
 
@@ -154,7 +156,7 @@ def layout(lang, key, title, desc, body, extra_head=""):
 </div>
 </footer>
 {chat_widget(lang)}
-<script src="/assets/lea.js?v=2" defer></script>
+<script src="/assets/lea.js?v=3" defer></script>
 <script src="/assets/site.js?v=10" defer></script>
 </body>
 </html>
@@ -219,6 +221,14 @@ def plans(lang, dark=True):
 <strong style="font-size:17px">{e(p["itin_t"])} {money(*ITIN, lang, plus=True)}</strong><span>{e(p["itin_d"])}</span></div></div>
 <div class="extra"><div style="display:flex;flex-direction:column;gap:6px">
 <strong style="font-size:17px">{e(p["renew_t"])} {money(*RENEW, lang, per=p["per_year"])}</strong><span>{e(p["renew_d"])}</span></div></div>'''
+    c = p["compta"]
+    rows = "".join(
+        f'<li>{CHECK.format(c="#8A6514")}<span><strong>{e(it["name"])}</strong> {e(it.get("from", ""))}{money(*COMPTA[it["k"]], lang, per=it["per"])}<br>{e(it["d"])}</span></li>'
+        for it in c["items"])
+    out += f'''<div class="extra"><div style="display:flex;flex-direction:column;gap:10px">
+<strong style="font-size:17px">{e(c["t"])}</strong><span>{e(c["lead"])}</span>
+<ul class="feat">{rows}</ul>
+<span class="hint">{e(c["note"])}</span></div></div>'''
     return out
 
 
