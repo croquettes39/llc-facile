@@ -80,7 +80,7 @@ T = {
         "popular": "Le plus choisi", "once": "paiement unique", "choose": "Choisir", "per_year": " / an",
         "plans": {
             "basic": {"name": "Basic", "desc": "Idéal pour démarrer simplement et en toute sécurité.",
-                      "features": ["Création de la LLC au Wyoming (frais d'État inclus)", "Agent enregistré (représentant légal) la 1re année", "Numéro de téléphone américain", "Numéro EIN (identification fiscale)", "Accompagnement de base"]},
+                      "features": ["Création de la LLC au Wyoming (frais d'État inclus)", "Agent enregistré (représentant légal) la 1re année", "Numéro de téléphone américain", "Numéro EIN (identification fiscale)", "Accompagnement de base", "Suivi pendant 6 mois"]},
             "ultimate": {"name": "Ultimate", "desc": "La solution la plus complète pour faire grandir votre activité.",
                          "features": ["Tous les services Basic", "Solutions de paiement (Stripe, PayPal…)", "Compte professionnel US (Mercury, Wise…)", "Accompagnement complet"]},
             "ultimate_launch": {"name": "Ultimate Launch", "desc": "Lancez votre boutique en ligne et commencez à vendre.",
@@ -97,6 +97,7 @@ T = {
         "k": "Questions fréquentes", "title": "Tout ce que vous voulez savoir",
         "lead": "Vous ne trouvez pas votre réponse ? Écrivez-nous sur WhatsApp.",
         "items": [
+        ("Pendant combien de temps suis-je suivi ?", "Pendant 6 mois à partir de la création de votre LLC, quelle que soit la formule. Pendant cette période, vous nous écrivez sur WhatsApp ou par e-mail dès que vous avez une question sur votre société, votre EIN, votre banque ou vos paiements."),
             ("Faut-il être résident américain ou avoir un visa ?", "Non. Une LLC peut être créée par une personne qui n'habite pas aux États-Unis, sans visa et sans déplacement. Tout se fait en ligne."),
             ("Combien de temps ça prend ?", "La société est généralement enregistrée en quelques jours ouvrés. L'obtention de l'EIN auprès de l'IRS peut prendre de quelques jours à plusieurs semaines pour les non-résidents."),
             ("Pourquoi le Wyoming ?", "C'est un État simple et peu coûteux à maintenir pour une petite LLC, sans impôt sur le revenu au niveau de l'État et avec un rapport annuel très léger."),

@@ -80,7 +80,7 @@ T = {
         "popular": "Most popular", "once": "one-time", "choose": "Choose", "per_year": " / year",
         "plans": {
             "basic": {"name": "Basic", "desc": "Ideal to get started simply and safely.",
-                      "features": ["Wyoming LLC formation (state fees included)", "Registered agent for the first year", "US phone number", "EIN (US tax ID)", "Standard support"]},
+                      "features": ["Wyoming LLC formation (state fees included)", "Registered agent for the first year", "US phone number", "EIN (US tax ID)", "Standard support", "6 months of follow-up"]},
             "ultimate": {"name": "Ultimate", "desc": "The complete solution to grow your business.",
                          "features": ["Everything in Basic", "Payment solutions (Stripe, PayPal…)", "US business account (Mercury, Wise…)", "Full support"]},
             "ultimate_launch": {"name": "Ultimate Launch", "desc": "Launch your online store and start selling.",
@@ -97,6 +97,7 @@ T = {
         "k": "FAQ", "title": "Everything you want to know",
         "lead": "Can't find your answer? Message us on WhatsApp.",
         "items": [
+        ("How long do you follow up with me?", "For 6 months from the formation of your LLC, whatever the package. During that time, message us on WhatsApp or by email whenever you have a question about your company, your EIN, your bank or your payments."),
             ("Do I need to live in the US or have a visa?", "No. An LLC can be formed by someone who does not live in the United States, with no visa and no travel. Everything is done online."),
             ("How long does it take?", "The company is usually registered within a few business days. Getting the EIN from the IRS can take from a few days to several weeks for non-residents."),
             ("Why Wyoming?", "It is a simple, low-cost state to maintain a small LLC, with no state income tax and a very light annual report."),
