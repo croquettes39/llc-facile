@@ -24,7 +24,7 @@ T = {
         "title": "Votre LLC américaine, 100 % en ligne, 100 % en français.",
         "lead": "On crée votre société aux États-Unis, on obtient votre EIN et on vous guide jusqu'à l'ouverture de votre compte bancaire US et de Stripe. Un vrai interlocuteur sur WhatsApp, du début à la fin.",
         "see_prices": "Voir les tarifs",
-        "ticks": ["Pas besoin de visa ni de voyage", "Frais d'État inclus", "Prix fixe, sans surprise"],
+        "ticks": ["Pas besoin de visa ni de voyage", "Frais d'État inclus", "Prix fixe, sans surprise", "Suivi pendant 6 mois"],
         "img_alt": "LLC Facile – Créez votre société (LLC) aux États-Unis. Simple, rapide, sécurisé.",
         "who_k": "Pour qui ?",
         "who_t": "Pensé pour les entrepreneurs francophones qui vendent en ligne",

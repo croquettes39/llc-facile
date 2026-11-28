@@ -24,7 +24,7 @@ T = {
         "title": "Your US LLC, 100% online, with a team that speaks your language.",
         "lead": "We form your company in the United States, get your EIN and guide you until your US bank account and Stripe are open. A real person on WhatsApp, from start to finish.",
         "see_prices": "See pricing",
-        "ticks": ["No visa, no travel", "State fees included", "Fixed price, no surprises"],
+        "ticks": ["No visa, no travel", "State fees included", "Fixed price, no surprises", "6 months of follow-up"],
         "img_alt": "LLC Facile – Form your company (LLC) in the United States. Simple, fast, secure.",
         "who_k": "Who is it for?",
         "who_t": "Built for entrepreneurs who sell online",
